@@ -9,15 +9,15 @@
 
 
 use utils::{degrees, fmod, min, max, turns};
-use std::f64::consts::PI;
+use std::f32::consts::PI;
 use std::num::Float;
 
 
 /// Color supporting RGB and HSL variants.
 #[derive(Copy, Clone, Debug)]
 pub enum Color {
-    Rgba(u8, u8, u8, f64),
-    Hsla(f64, f64, f64, f64),
+    Rgba(u8, u8, u8, f32),
+    Hsla(f32, f32, f32, f32),
 }
 /// Regional spelling alias.
 pub type Colour = Color;
@@ -25,7 +25,7 @@ pub type Colour = Color;
 
 /// Create RGB colors with an alpha component for transparency.
 /// The alpha component is specified with numbers between 0 and 1.
-pub fn rgba(r: u8, g: u8, b: u8, a: f64) -> Color {
+pub fn rgba(r: u8, g: u8, b: u8, a: f32) -> Color {
     Color::Rgba(r, g, b, a)
 }
 
@@ -38,7 +38,7 @@ pub fn rgb(r: u8, g: u8, b: u8) -> Color {
 
 /// Create [HSL colors](http://en.wikipedia.org/wiki/HSL_and_HSV) with an alpha component for
 /// transparency.
-pub fn hsla(hue: f64, saturation: f64, lightness: f64, alpha: f64) -> Color {
+pub fn hsla(hue: f32, saturation: f32, lightness: f32, alpha: f32) -> Color {
     Color::Hsla(hue - turns((hue / (2.0 * PI)).floor()), saturation, lightness, alpha)
 }
 
@@ -54,55 +54,75 @@ pub fn hsla(hue: f64, saturation: f64, lightness: f64, alpha: f64) -> Color {
 /// To cycle through all colors, just cycle through degrees. The saturation level is how vibrant
 /// the color is, like a dial between grey and bright colors. The lightness level is a dial between
 /// white and black.
-pub fn hsl(hue: f64, saturation: f64, lightness: f64) -> Color {
+pub fn hsl(hue: f32, saturation: f32, lightness: f32) -> Color {
     hsla(hue, saturation, lightness, 1.0)
 }
 
 
 /// Produce a gray based on the input. 0.0 is white, 1.0 is black.
-pub fn grayscale(p: f64) -> Color {
+pub fn grayscale(p: f32) -> Color {
     Color::Hsla(0.0, 0.0, 1.0-p, 1.0)
 }
 /// Produce a gray based on the input. 0.0 is white, 1.0 is black.
-pub fn greyscale(p: f64) -> Color {
+pub fn greyscale(p: f32) -> Color {
     Color::Hsla(0.0, 0.0, 1.0-p, 1.0)
 }
 
 
+impl Color {
 
-/// Produce a complementary color. The two colors will accent each other. This is the same as
-/// rotating the hue by 180 degrees.
-pub fn complement(color: Color) -> Color {
-    match color {
-        Color::Hsla(h, s, l, a) => hsla(h + degrees(180.0), s, l, a),
-        Color::Rgba(r, g, b, a) => {
-            let (h, s, l) = rgb_to_hsl(r, g, b);
-            hsla(h + degrees(180.0), s, l, a)
-        },
+    /// Produce a complementary color. The two colors will accent each other. This is the same as
+    /// rotating the hue by 180 degrees.
+    #[inline]
+    pub fn complement(self) -> Color {
+        match self {
+            Color::Hsla(h, s, l, a) => hsla(h + degrees(180.0), s, l, a),
+            Color::Rgba(r, g, b, a) => {
+                let (h, s, l) = rgb_to_hsl(r, g, b);
+                hsla(h + degrees(180.0), s, l, a)
+            },
+        }
     }
-}
 
+    /// Extract the components of a color in the HSL format.
+    #[inline]
+    pub fn to_hsl(self) -> Hsla {
+        match self {
+            Color::Hsla(h, s, l, a) => Hsla { hue: h, saturation: s, lightness: l, alpha: a },
+            Color::Rgba(r, g, b, a) => {
+                let (h, s, l) = rgb_to_hsl(r, g, b);
+                Hsla { hue: h, saturation: s, lightness: l, alpha: a }
+            },
+        }
+    }
+
+    /// Extract the components of a color in the RGB format.
+    pub fn to_rgb(self) -> Rgba {
+        match self {
+            Color::Rgba(r, g, b, a) => Rgba { red: r, green: g, blue: b, alpha: a },
+            Color::Hsla(h, s, l, a) => {
+                let (r, g, b) = hsl_to_rgb(h, s, l);
+                Rgba {
+                    red: (255.0 * r).round() as u8,
+                    green: (255.0 * g).round() as u8,
+                    blue: (255.0 * b).round() as u8,
+                    alpha: a,
+                }
+            },
+        }
+    }
+
+}
 
 /// The parts of HSL along with an alpha for transparency.
 #[derive(Copy, Clone, Debug)]
 pub struct Hsla {
-    pub hue: f64,
-    pub saturation: f64,
-    pub lightness: f64,
-    pub alpha: f64,
+    pub hue: f32,
+    pub saturation: f32,
+    pub lightness: f32,
+    pub alpha: f32,
 }
 
-
-/// Extract the components of a color in the HSL format.
-pub fn to_hsl(color: Color) -> Hsla {
-    match color {
-        Color::Hsla(h, s, l, a) => Hsla { hue: h, saturation: s, lightness: l, alpha: a },
-        Color::Rgba(r, g, b, a) => {
-            let (h, s, l) = rgb_to_hsl(r, g, b);
-            Hsla { hue: h, saturation: s, lightness: l, alpha: a }
-        },
-    }
-}
 
 
 /// The parts of RGB along with an alpha for transparency.
@@ -111,31 +131,14 @@ pub struct Rgba {
     pub red: u8,
     pub green: u8,
     pub blue: u8,
-    pub alpha: f64,
+    pub alpha: f32,
 }
 
 
-/// Extract the components of a color in the RGB format.
-pub fn to_rgb(color: Color) -> Rgba {
-    match color {
-        Color::Rgba(r, g, b, a) => Rgba { red: r, green: g, blue: b, alpha: a },
-        Color::Hsla(h, s, l, a) => {
-            let (r, g, b) = hsl_to_rgb(h, s, l);
-            Rgba {
-                red: (255.0 * r).round() as u8,
-                green: (255.0 * g).round() as u8,
-                blue: (255.0 * b).round() as u8,
-                alpha: a,
-            }
-        },
-    }
-}
-
-
-fn rgb_to_hsl(red: u8, green: u8, blue: u8) -> (f64, f64, f64) {
-    let r = red as f64 / 255.0;
-    let g = green as f64 / 255.0;
-    let b = blue as f64 / 255.0;
+pub fn rgb_to_hsl(red: u8, green: u8, blue: u8) -> (f32, f32, f32) {
+    let r = red as f32 / 255.0;
+    let g = green as f32 / 255.0;
+    let b = blue as f32 / 255.0;
     let c_max = max(max(r, g), b);
     let c_min = min(min(r, g), b);
     let c = c_max - c_min;
@@ -149,7 +152,7 @@ fn rgb_to_hsl(red: u8, green: u8, blue: u8) -> (f64, f64, f64) {
 }
 
 
-fn hsl_to_rgb(hue: f64, saturation: f64, lightness: f64) -> (f64, f64, f64) {
+pub fn hsl_to_rgb(hue: f32, saturation: f32, lightness: f32) -> (f32, f32, f32) {
     let chroma = (1.0 - (2.0 * lightness - 1.0).abs()) * saturation;
     let hue = hue / degrees(60.0);
     let x = chroma * (1.0 - (fmod(hue, 2) - 1.0).abs());

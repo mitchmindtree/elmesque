@@ -21,6 +21,21 @@ pub type Matrix2d = Matrix2x3<f64>;
 #[derive(Clone, Debug)]
 pub struct Transform2D(pub Matrix2d);
 
+impl Transform2D {
+
+    /// Multiply two transforms together.
+    ///
+    ///   ma mb mx     na nb nx
+    ///   mc md my  .  nc nd ny
+    ///    0  0  1      0  0  1
+    ///
+    #[inline]
+    pub fn multiply(self, other: Transform2D) -> Transform2D {
+        let (Transform2D(m), Transform2D(n)) = (self, other);
+        Transform2D(row_mat2x3_mul(m, n))
+    }
+
+}
 
 /// Create an identity transform. Transforming by the identity does not change anything, but it can
 /// come in handy as a default or base case.
@@ -85,16 +100,5 @@ pub fn scale_x(s: f64) -> Transform2D {
 #[inline]
 pub fn scale_y(s: f64) -> Transform2D {
     matrix(1.0, 0.0, 0.0, s, 0.0, 0.0)
-}
-
-/// Multiply two transforms together.
-///
-///   ma mb mx     na nb nx
-///   mc md my  .  nc nd ny
-///    0  0  1      0  0  1
-///
-#[inline]
-pub fn multiply(Transform2D(m): Transform2D, Transform2D(n): Transform2D) -> Transform2D {
-    Transform2D(row_mat2x3_mul(m, n))
 }
 

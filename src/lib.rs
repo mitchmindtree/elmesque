@@ -11,16 +11,16 @@
 
 #![feature(core)]
 
+extern crate gfx_device_gl;
+extern crate gfx_texture;
+extern crate graphics;
 extern crate vecmath;
 
-pub use draw::{draw, draw_forms, Renderer};
-
 pub use color as colour;
-
 pub mod color;
-mod draw;
 pub mod form;
 pub mod text;
 pub mod transform_2d;
 pub mod utils;
 
+pub type Texture = ::gfx_texture::Texture<::gfx_device_gl::GlResources>;

@@ -33,12 +33,15 @@
 //!
 
 
-use color::{black, Color, Gradient};
+use color::{Color, Gradient};
+use graphics::{self, DrawState, Graphics};
 use std::f64::consts::PI;
 use std::num::Float;
-use std::path::PathBuf;
+use std::rc::Rc;
 use text::Text;
+use Texture;
 use transform_2d::{self, Transform2D};
+
 
 
 /// A general, freeform 2D graphics structure.
@@ -48,7 +51,7 @@ pub struct Form {
     pub scale: f64,
     pub x: f64,
     pub y: f64,
-    pub alpha: f64,
+    pub alpha: f32,
     pub form: BasicForm,
 }
 
@@ -56,7 +59,7 @@ pub struct Form {
 #[derive(Clone, Debug)]
 pub enum FillStyle {
     Solid(Color),
-    Texture(String),
+    Texture(Rc<Texture>),
     Grad(Gradient),
 }
 
@@ -91,7 +94,7 @@ pub struct LineStyle {
 impl LineStyle {
     pub fn default() -> LineStyle {
         LineStyle {
-            color: black(),
+            color: ::color::black(),
             width: 1.0,
             cap: LineCap::Flat,
             join: LineJoin::Sharp(10.0),
@@ -125,7 +128,7 @@ pub enum BasicForm {
     Shape(ShapeStyle, Shape),
     OutlinedText(LineStyle, Text),
     Text(Text),
-    Image(i64, i64, (i64, i64), PathBuf),
+    Image(i32, i32, (i32, i32), Rc<Texture>),
     //Element(Element),
     Group(Transform2D, Vec<Form>),
 }
@@ -139,20 +142,94 @@ pub enum ShapeStyle {
 }
 
 
-fn form(basic_form: BasicForm) -> Form {
-    Form {
-        theta: 0.0,
-        scale: 1.0,
-        x: 0.0,
-        y: 0.0,
-        alpha: 1.0,
-        form: basic_form,
+// /// Turn any `Element` into a `Form`. This lets you use text, gifs, and video in your collage. This
+// /// means you can move, rotate, and scale an `Element` however you want.
+// pub fn to_form(element: Element) -> Form {
+//     form(BasicForm::Element(element))
+// }
+
+impl Form {
+
+    fn new(basic_form: BasicForm) -> Form {
+        Form {
+            theta: 0.0,
+            scale: 1.0,
+            x: 0.0,
+            y: 0.0,
+            alpha: 1.0,
+            form: basic_form,
+        }
     }
+
+    /// Flatten many forms into a single `Form`. This lets you move and rotate them as a single unit,
+    /// making it possible to build small, modular components.
+    pub fn group(forms: Vec<Form>) -> Form {
+        Form::new(BasicForm::Group(transform_2d::identity(), forms))
+    }
+
+
+    /// Flatten many forms into a single `Form` and then apply a matrix transformation.
+    pub fn group_transform(matrix: Transform2D, forms: Vec<Form>) -> Form {
+        Form::new(BasicForm::Group(matrix, forms))
+    }
+
+
+    /// Move a form by the given amount. this is a relative translation so `shift(10.0, 10.0, form) would
+    /// move `form` ten pixels up and ten pixels to the right.
+    #[inline]
+    pub fn shift(self, x: f64, y: f64) -> Form {
+        Form { x: self.x + x, y: self.y + y, ..self }
+    }
+
+
+    /// Move a shape in the x direction. This is relative so `shift_x(10.0, form)` moves `form` 10 pixels
+    /// to the right.
+    #[inline]
+    pub fn shift_x(self, x: f64) -> Form {
+        Form { x: self.x + x, ..self }
+    }
+
+
+    /// Move a shape in the y direction. This is relative so `shift_y(10.0, form)` moves `form upwards
+    /// by 10 pixels.
+    #[inline]
+    pub fn shift_y(self, y: f64) -> Form {
+        Form { y: self.y + y, ..self }
+    }
+
+
+    /// Scale a form by a given factor. Scaling by 2 doubles both dimensions and quadruples the area.
+    #[inline]
+    pub fn scale(self, scale: f64) -> Form {
+        Form { scale: self.scale * scale, ..self }
+    }
+
+
+    /// Rotate a form by a given angle. Rotate takes radians and turns things counterclockwise. So to
+    /// turn `form` 30 degrees to the left you would say `rotate(degrees(30), form)`.
+    #[inline]
+    pub fn rotate(self, theta: f64) -> Form {
+        Form { theta: self.theta + theta, ..self }
+    }
+
+
+    /// Set the alpha of a Form. The default is 1 and 0 is totally transparent.
+    #[inline]
+    pub fn alpha(self, alpha: f32) -> Form {
+        Form { alpha: alpha, ..self }
+    }
+
+    /// Draw the form with some given graphics backend.
+    #[inline]
+    pub fn draw<G: Graphics<Texture=Texture>>(self, g: &mut G) {
+        draw_form(self, transform_2d::identity(), g, graphics::default_draw_state());
+    }
+
 }
 
 
 fn fill(style: FillStyle, shape: Shape) -> Form {
-    form(BasicForm::Shape(ShapeStyle::Fill(style), shape))
+    Form::new(BasicForm::Shape(ShapeStyle::Fill(style), shape))
 }
 
 
@@ -164,8 +241,8 @@ pub fn filled(color: Color, shape: Shape) -> Form {
 
 /// Create a textured shape.
 /// The texture is described by some path and is tiled to fill the entire shape.
-pub fn textured(src: String, shape: Shape) -> Form {
-    fill(FillStyle::Texture(src), shape)
+pub fn textured(texture: Rc<Texture>, shape: Shape) -> Form {
+    fill(FillStyle::Texture(texture), shape)
 }
 
 
@@ -177,79 +254,19 @@ pub fn gradient(grad: Gradient, shape: Shape) -> Form {
 
 /// Outline a shape with a given line style.
 pub fn outlined(style: LineStyle, shape: Shape) -> Form {
-    form(BasicForm::Shape(ShapeStyle::Line(style), shape))
+    Form::new(BasicForm::Shape(ShapeStyle::Line(style), shape))
 }
 
 
 /// Trace a path with a given line style.
 pub fn traced(style: LineStyle, path: PointPath) -> Form {
-    form(BasicForm::PointPath(style, path))
+    Form::new(BasicForm::PointPath(style, path))
 }
 
 
 /// Create a sprite from a sprite sheet. It cuts out a rectangle at a given position.
-pub fn sprite(w: i64, h: i64, pos: (i64, i64), src: PathBuf) -> Form {
-    form(BasicForm::Image(w, h, pos, src))
-}
-
-
-// /// Turn any `Element` into a `Form`. This lets you use text, gifs, and video in your collage. This
-// /// means you can move, rotate, and scale an `Element` however you want.
-// pub fn to_form(element: Element) -> Form {
-//     form(BasicForm::Element(element))
-// }
-
-
-/// Flatten many forms into a single `Form`. This lets you move and rotate them as a single unit,
-/// making it possible to build small, modular components.
-pub fn group(forms: Vec<Form>) -> Form {
-    form(BasicForm::Group(transform_2d::identity(), forms))
-}
-
-
-/// Flatten many forms into a single `Form` and then apply a matrix transformation.
-pub fn group_transform(matrix: Transform2D, forms: Vec<Form>) -> Form {
-    form(BasicForm::Group(matrix, forms))
-}
-
-
-/// Move a form by the given amount. this is a relative translation so `shift(10.0, 10.0, form) would
-/// move `form` ten pixels up and ten pixels to the right.
-pub fn shift(x: f64, y: f64, form: Form) -> Form {
-    Form { x: form.x + x, y: form.y + y, ..form }
-}
-
-
-/// Move a shape in the x direction. This is relative so `shift_x(10.0, form)` moves `form` 10 pixels
-/// to the right.
-pub fn shift_x(x: f64, form: Form) -> Form {
-    Form { x: form.x + x, ..form }
-}
-
-
-/// Move a shape in the y direction. This is relative so `shift_y(10.0, form)` moves `form upwards
-/// by 10 pixels.
-pub fn shift_y(y: f64, form: Form) -> Form {
-    Form { y: form.y + y, ..form }
-}
-
-
-/// Scale a form by a given factor. Scaling by 2 doubles both dimensions and quadruples the area.
-pub fn scale(scale: f64, form: Form) -> Form {
-    Form { scale: form.scale * scale, ..form }
-}
-
-
-/// Rotate a form by a given angle. Rotate takes radians and turns things counterclockwise. So to
-/// turn `form` 30 degrees to the left you would say `rotate(degrees(30), form)`.
-pub fn rotate(theta: f64, form: Form) -> Form {
-    Form { theta: form.theta + theta, ..form }
-}
-
-
-/// Set the alpha of a Form. The default is 1 and 0 is totally transparent.
-pub fn alpha(alpha: f64, form: Form) -> Form {
-    Form { alpha: alpha, ..form }
+pub fn sprite(w: i32, h: i32, pos: (i32, i32), texture: Rc<Texture>) -> Form {
+    Form::new(BasicForm::Image(w, h, pos, texture))
 }
 
 
@@ -336,7 +353,122 @@ pub fn ngon(n: usize, r: f64) -> Shape {
 /// Create some text. Details like size and color are part of the `Text` value itself, so you can
 /// mix colors and sizes and fonts easily.
 pub fn text(t: Text) -> Form {
-    form(BasicForm::Text(t))
+    Form::new(BasicForm::Text(t))
 }
 
+
+
+
+
+
+
+
+
+/// CUSTOM NON-ELM FUNCTION.
+/// 
+/// Normally Elm renders to html and javascript, however the aim of elmesque is to render to GL.
+///
+/// This function draws a form with some given transform using the generic [Piston graphics]
+/// (https://github.com/PistonDevelopers/graphics) backend.
+fn draw_form<G: Graphics<Texture=Texture>>
+(form: Form, transform: Transform2D, g: &mut G, draw_state: &DrawState) {
+    let Form { theta, scale, x, y, alpha, form } = form;
+    match form {
+
+        BasicForm::PointPath(line_style, PointPath(points)) => {
+            let Transform2D(matrix) = transform
+                .multiply(transform_2d::translation(x, y))
+                .multiply(transform_2d::scale(scale))
+                .multiply(transform_2d::rotation(theta));
+            // NOTE: join, dashing and dash_offset are not yet handled properly.
+            let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
+            let color = convert_color(color, alpha);
+            for window in points.windows(2) {
+                let ((x1, y1), (x2, y2)) = (window[0], window[1]);
+                let line = match cap {
+                    LineCap::Flat => graphics::Line::new(color, width / 2.0),
+                    LineCap::Round => graphics::Line::round(color, width / 2.0),
+                    LineCap::Padded => unimplemented!(),
+                };
+                line.draw([x1, y1, x2, y2], draw_state, matrix, g);
+            }
+        },
+
+        BasicForm::Shape(shape_style, Shape(points)) => {
+            let Transform2D(matrix) = transform
+                .multiply(transform_2d::translation(x, y))
+                .multiply(transform_2d::scale(scale))
+                .multiply(transform_2d::rotation(theta));
+            match shape_style {
+                ShapeStyle::Line(line_style) => {
+                    // NOTE: join, dashing and dash_offset are not yet handled properly.
+                    let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
+                    let color = convert_color(color, alpha);
+                    for window in points.windows(2) {
+                        let ((x1, y1), (x2, y2)) = (window[0], window[1]);
+                        let line = match cap {
+                            LineCap::Flat => graphics::Line::new(color, width / 2.0),
+                            LineCap::Round => graphics::Line::round(color, width / 2.0),
+                            LineCap::Padded => unimplemented!(),
+                        };
+                        line.draw([x1, y1, x2, y2], draw_state, matrix, g);
+                    }
+                },
+                ShapeStyle::Fill(fill_style) => match fill_style {
+                    FillStyle::Solid(color) => {
+                        let color = convert_color(color, alpha);
+                        let polygon = graphics::Polygon::new(color);
+                        let points: Vec<_> = points.into_iter().map(|(x, y)| [x, y]).collect();
+                        polygon.draw(&points[..], draw_state, matrix, g);
+                    },
+                    FillStyle::Texture(path_buf) => {
+                        unimplemented!();
+                    },
+                    FillStyle::Grad(gradient) => {
+                        unimplemented!();
+                    },
+                },
+            }
+        },
+
+        BasicForm::OutlinedText(line_style, text) => {
+            unimplemented!();
+        },
+
+        BasicForm::Text(text) => {
+            unimplemented!();
+        },
+
+        BasicForm::Image(src_x, src_y, (w, h), texture) => {
+            let Transform2D(matrix) = transform
+                .multiply(transform_2d::translation(x, y))
+                .multiply(transform_2d::scale(scale))
+                .multiply(transform_2d::rotation(theta));
+            let image = graphics::Image {
+                color: None,
+                rectangle: None,
+                source_rectangle: Some([src_x, src_y, w, h]),
+            };
+            let texture: &Texture = ::std::ops::Deref::deref(&texture);
+            image.draw(texture, draw_state, matrix, g);
+        },
+        BasicForm::Group(group_transform, forms) => {
+            let transform = transform.clone().multiply(group_transform.clone());
+            for form in forms.into_iter() {
+                draw_form(form, transform.clone(), g, draw_state);
+            }
+        },
+        //BasicForm::Element(Element),
+    }
+}
+
+/// Convert an elmesque color to a piston color.
+fn convert_color(color: Color, alpha: f32) -> [f32; 4] {
+    use color::hsl_to_rgb;
+    let ((r, g, b), a) = match color {
+        Color::Hsla(h, s, l, a) => (hsl_to_rgb(h, s, l), a),
+        Color::Rgba(r, g, b, a) => ((r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0), a),
+    };
+    [r, g, b, a * alpha]
+}
 

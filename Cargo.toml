@@ -9,6 +9,14 @@ license = "MIT"
 repository = "https://github.com/mitchmindtree/elmesque.git"
 homepage = "https://github.com/mitchmindtree/elmesque"
 
+[dependencies.piston-gfx_texture]
+git = "https://github.com/PistonDevelopers/gfx_texture.git"
+version = "*"
+
+[dependencies.gfx_device_gl]
+git = "https://github.com/gfx-rs/gfx_device_gl.git"
+version = "*"
 
 [dependencies]
+piston2d-graphics = "*"
 vecmath = "*"
