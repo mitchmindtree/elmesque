@@ -2,17 +2,18 @@
 //! Miscellaneous utility functions.
 //!
 
-use std::f32::consts::PI;
+use std::f64::consts::PI;
 use std::num::{Float, Int};
+use std::num::NumCast;
 
 /// Convert turns to radians.
-pub fn turns(t: f32) -> f32 {
-    2.0 * PI / t
+pub fn turns<F: Float>(t: F) -> F {
+    NumCast::from(2.0 * PI).unwrap() / t
 }
 
 /// Convert degrees to radians.
-pub fn degrees(d: f32) -> f32 {
-    d * PI / 180.0
+pub fn degrees<F: Float>(d: F) -> F {
+    d * NumCast::from(PI / 180.0).unwrap()
 }
 
 /// The modulo function.

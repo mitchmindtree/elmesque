@@ -40,7 +40,7 @@ use std::num::Float;
 use std::rc::Rc;
 use text::Text;
 use Texture;
-use transform_2d::{self, Transform2D};
+use transform_2d::{self, Matrix2d, Transform2D};
 
 
 
@@ -161,19 +161,6 @@ impl Form {
         }
     }
 
-    /// Flatten many forms into a single `Form`. This lets you move and rotate them as a single unit,
-    /// making it possible to build small, modular components.
-    pub fn group(forms: Vec<Form>) -> Form {
-        Form::new(BasicForm::Group(transform_2d::identity(), forms))
-    }
-
-
-    /// Flatten many forms into a single `Form` and then apply a matrix transformation.
-    pub fn group_transform(matrix: Transform2D, forms: Vec<Form>) -> Form {
-        Form::new(BasicForm::Group(matrix, forms))
-    }
-
-
     /// Move a form by the given amount. this is a relative translation so `shift(10.0, 10.0, form) would
     /// move `form` ten pixels up and ten pixels to the right.
     #[inline]
@@ -221,40 +208,23 @@ impl Form {
 
     /// Draw the form with some given graphics backend.
     #[inline]
-    pub fn draw<G: Graphics<Texture=Texture>>(self, g: &mut G) {
-        draw_form(self, transform_2d::identity(), g, graphics::default_draw_state());
+    pub fn draw<G: Graphics<Texture=Texture>>(self, c: graphics::Context, g: &mut G) {
+        draw_form(self, c.transform, g, &c.draw_state);
     }
 
 }
 
 
-fn fill(style: FillStyle, shape: Shape) -> Form {
-    Form::new(BasicForm::Shape(ShapeStyle::Fill(style), shape))
+/// Flatten many forms into a single `Form`. This lets you move and rotate them as a single unit,
+/// making it possible to build small, modular components.
+pub fn group(forms: Vec<Form>) -> Form {
+    Form::new(BasicForm::Group(transform_2d::identity(), forms))
 }
 
 
-/// Create a filled-in shape.
-pub fn filled(color: Color, shape: Shape) -> Form {
-    fill(FillStyle::Solid(color), shape)
-}
-
-
-/// Create a textured shape.
-/// The texture is described by some path and is tiled to fill the entire shape.
-pub fn textured(texture: Rc<Texture>, shape: Shape) -> Form {
-    fill(FillStyle::Texture(texture), shape)
-}
-
-
-/// Fill a shape with a gradient.
-pub fn gradient(grad: Gradient, shape: Shape) -> Form {
-    fill(FillStyle::Grad(grad), shape)
-}
-
-
-/// Outline a shape with a given line style.
-pub fn outlined(style: LineStyle, shape: Shape) -> Form {
-    Form::new(BasicForm::Shape(ShapeStyle::Line(style), shape))
+/// Flatten many forms into a single `Form` and then apply a matrix transformation.
+pub fn group_transform(matrix: Transform2D, forms: Vec<Form>) -> Form {
+    Form::new(BasicForm::Group(matrix, forms))
 }
 
 
@@ -297,6 +267,45 @@ pub fn segment(a: (f64, f64), b: (f64, f64)) -> PointPath {
 /// A shape described by its edges.
 #[derive(Clone, Debug)]
 pub struct Shape(pub Vec<(f64, f64)>);
+
+
+impl Shape {
+
+    #[inline]
+    fn fill(self, style: FillStyle) -> Form {
+        Form::new(BasicForm::Shape(ShapeStyle::Fill(style), self))
+    }
+
+
+    /// Create a filled-in shape.
+    #[inline]
+    pub fn filled(self, color: Color) -> Form {
+        self.fill(FillStyle::Solid(color))
+    }
+
+
+    /// Create a textured shape.
+    /// The texture is described by some path and is tiled to fill the entire shape.
+    #[inline]
+    pub fn textured(self, texture: Rc<Texture>) -> Form {
+        self.fill(FillStyle::Texture(texture))
+    }
+
+
+    /// Fill a shape with a gradient.
+    #[inline]
+    pub fn gradient(self, grad: Gradient) -> Form {
+        self.fill(FillStyle::Grad(grad))
+    }
+
+
+    /// Outline a shape with a given line style.
+    #[inline]
+    pub fn outlined(self, style: LineStyle) -> Form {
+        Form::new(BasicForm::Shape(ShapeStyle::Line(style), self))
+    }
+
+}
 
 
 /// Create an arbitrary polygon by specifying its corners in order. `polygon` will automatically
@@ -371,15 +380,15 @@ pub fn text(t: Text) -> Form {
 /// This function draws a form with some given transform using the generic [Piston graphics]
 /// (https://github.com/PistonDevelopers/graphics) backend.
 fn draw_form<G: Graphics<Texture=Texture>>
-(form: Form, transform: Transform2D, g: &mut G, draw_state: &DrawState) {
+(form: Form, matrix: Matrix2d, g: &mut G, draw_state: &DrawState) {
     let Form { theta, scale, x, y, alpha, form } = form;
+    let Transform2D(matrix) = Transform2D(matrix)
+        .multiply(transform_2d::translation(x, y))
+        .multiply(transform_2d::scale(scale))
+        .multiply(transform_2d::rotation(theta));
     match form {
 
         BasicForm::PointPath(line_style, PointPath(points)) => {
-            let Transform2D(matrix) = transform
-                .multiply(transform_2d::translation(x, y))
-                .multiply(transform_2d::scale(scale))
-                .multiply(transform_2d::rotation(theta));
             // NOTE: join, dashing and dash_offset are not yet handled properly.
             let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
             let color = convert_color(color, alpha);
@@ -395,10 +404,6 @@ fn draw_form<G: Graphics<Texture=Texture>>
         },
 
         BasicForm::Shape(shape_style, Shape(points)) => {
-            let Transform2D(matrix) = transform
-                .multiply(transform_2d::translation(x, y))
-                .multiply(transform_2d::scale(scale))
-                .multiply(transform_2d::rotation(theta));
             match shape_style {
                 ShapeStyle::Line(line_style) => {
                     // NOTE: join, dashing and dash_offset are not yet handled properly.
@@ -440,10 +445,6 @@ fn draw_form<G: Graphics<Texture=Texture>>
         },
 
         BasicForm::Image(src_x, src_y, (w, h), texture) => {
-            let Transform2D(matrix) = transform
-                .multiply(transform_2d::translation(x, y))
-                .multiply(transform_2d::scale(scale))
-                .multiply(transform_2d::rotation(theta));
             let image = graphics::Image {
                 color: None,
                 rectangle: None,
@@ -453,9 +454,9 @@ fn draw_form<G: Graphics<Texture=Texture>>
             image.draw(texture, draw_state, matrix, g);
         },
         BasicForm::Group(group_transform, forms) => {
-            let transform = transform.clone().multiply(group_transform.clone());
+            let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
             for form in forms.into_iter() {
-                draw_form(form, transform.clone(), g, draw_state);
+                draw_form(form, matrix.clone(), g, draw_state);
             }
         },
         //BasicForm::Element(Element),
