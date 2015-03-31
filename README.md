@@ -27,3 +27,4 @@ Add elmesque to your cargo dependencies like so.
 [dependencies]
 elmesque = "*"
 ```
+

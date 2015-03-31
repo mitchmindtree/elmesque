@@ -2,6 +2,13 @@
 name = "elmesque"
 version = "0.0.1"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
+description = "An attempt at porting Elm's incredibly useful, purely functional std graphics modules."
+readme = "README.md"
+keywords = ["elm", "graphics", "2d", "ui", "shape"]
+license = "MIT"
+repository = "https://github.com/mitchmindtree/elmesque.git"
+homepage = "https://github.com/mitchmindtree/elmesque"
+
 
 [dependencies]
 vecmath = "*"

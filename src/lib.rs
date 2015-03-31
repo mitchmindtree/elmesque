@@ -13,7 +13,7 @@
 
 extern crate vecmath;
 
-pub use draw::{draw, draw_form, Renderer};
+pub use draw::{draw, draw_forms, Renderer};
 
 pub use color as colour;
 
