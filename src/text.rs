@@ -30,14 +30,14 @@ pub enum Line {
 /// 16 pixel tall, underlined, and Times New Roman (assuming that typeface is available on the
 /// user's computer):
 ///
-///     Style {
-///         type_face: Some("Times New Roman"),
-///         height: Some(16),
-///         color: black(),
-///         bold: false,
-///         italic: false,
-///         line: Some(Line::Under),
-///     }
+///   Style {
+///       type_face: Some("Times New Roman"),
+///       height: Some(16),
+///       color: black(),
+///       bold: false,
+///       italic: false,
+///       line: Some(Line::Under),
+///   }
 ///
 #[derive(Clone, Debug)]
 pub struct Style {
@@ -105,7 +105,7 @@ impl Text {
     /// Set the style of some text. For example, if you design a `Style` called `foorter_style` that is
     /// specifically for the bottom of your page, you could apply it to text like this:
     ///
-    ///     style(footer_style, from_string("the old prince / 2007"))
+    ///   style(footer_style, from_string("the old prince / 2007"))
     ///
     #[inline]
     pub fn style(self, style: Style) -> Text {
@@ -128,7 +128,7 @@ impl Text {
 
     /// Switch to a monospace typeface. Good for code snippets.
     ///
-    ///     monospace(from_string("(0..3).fold(0, |a, b| a + b)"))
+    ///   monospace(from_string("(0..3).fold(0, |a, b| a + b)"))
     ///
     #[inline]
     pub fn monospace(mut self) -> Text {

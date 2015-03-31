@@ -46,10 +46,10 @@ pub fn hsla(hue: f64, saturation: f64, lightness: f64, alpha: f64) -> Color {
 /// Create [HSL colors](http://en.wikipedia.org/wiki/HSL_and_HSV). This gives you access to colors
 /// more like a color wheel, where all hues are arranged in a circle that you specify with radians.
 /// 
-///     red        = hsl(degrees(0.0)   , 1.0 , 0.5)
-///     green      = hsl(degrees(120.0) , 1.0 , 0.5)
-///     blue       = hsl(degrees(240.0) , 1.0 , 0.5)
-///     pastel_red = hsl(degrees(0.0)   , 0.7 , 0.7)
+///   red        = hsl(degrees(0.0)   , 1.0 , 0.5)
+///   green      = hsl(degrees(120.0) , 1.0 , 0.5)
+///   blue       = hsl(degrees(240.0) , 1.0 , 0.5)
+///   pastel_red = hsl(degrees(0.0)   , 0.7 , 0.7)
 ///
 /// To cycle through all colors, just cycle through degrees. The saturation level is how vibrant
 /// the color is, like a dial between grey and bright colors. The lightness level is a dial between
