@@ -25,8 +25,8 @@ pub struct Transform2D(pub Matrix2d);
 /// Create an identity transform. Transforming by the identity does not change anything, but it can
 /// come in handy as a default or base case.
 ///
-///     / 1 0 0 \
-///     \ 0 1 0 /
+///     1 0 0
+///     0 1 0
 ///
 #[inline]
 pub fn identity() -> Transform2D {
@@ -36,8 +36,8 @@ pub fn identity() -> Transform2D {
 /// Creates a transformation matrix. This lets you create transforms such as scales, shears,
 /// reflections and translations.
 ///
-///     / a b x \
-///     \ c d y /
+///     a b x
+///     c d y
 ///
 #[inline]
 pub fn matrix(a: f64, b: f64, c: f64, d: f64, x: f64, y: f64) -> Transform2D {
@@ -47,8 +47,8 @@ pub fn matrix(a: f64, b: f64, c: f64, d: f64, x: f64, y: f64) -> Transform2D {
 /// Create a [rotation matrix](http://en.wikipedia.org/wiki/Rotation_matrix). Given an angle t, it
 /// creates a counterclockwise rotation matrix.
 ///
-///     / cos t  -sin t  0 \
-///     \ sin t   cos t  0 /
+///     cos t  -sin t  0
+///     sin t   cos t  0
 ///
 #[inline]
 pub fn rotation(t: f64) -> Transform2D {
@@ -57,8 +57,8 @@ pub fn rotation(t: f64) -> Transform2D {
 
 /// Creates a transformation matrix for translation.
 ///
-///     / 1 0 x \
-///     \ 0 1 y /
+///     1 0 x
+///     0 1 y
 ///
 #[inline]
 pub fn translation(x: f64, y: f64) -> Transform2D {
@@ -67,8 +67,8 @@ pub fn translation(x: f64, y: f64) -> Transform2D {
 
 /// Creates a transformation matrix for scaling by all directions.
 ///
-///     / s 0 0 \
-///     \ 0 s 0 /
+///     s 0 0
+///     0 s 0
 ///
 #[inline]
 pub fn scale(s: f64) -> Transform2D {
@@ -89,9 +89,9 @@ pub fn scale_y(s: f64) -> Transform2D {
 
 /// Multiply two transforms together.
 ///
-///     / ma mb mx \   / na nb nx \
-///     | mc md my | . | nc nd ny |
-///     \  0  0  1 /   \  0  0  1 /
+///     ma mb mx     na nb nx
+///     mc md my  .  nc nd ny
+///      0  0  1      0  0  1
 ///
 #[inline]
 pub fn multiply(Transform2D(m): Transform2D, Transform2D(n): Transform2D) -> Transform2D {

@@ -1,6 +1,6 @@
 [package]
 name = "elmesque"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 description = "An attempt at porting Elm's incredibly useful, purely functional std graphics modules."
 readme = "README.md"
