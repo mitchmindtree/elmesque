@@ -43,7 +43,6 @@ use Texture;
 use transform_2d::{self, Matrix2d, Transform2D};
 
 
-
 /// A general, freeform 2D graphics structure.
 #[derive(Clone, Debug)]
 pub struct Form {
@@ -208,8 +207,12 @@ impl Form {
 
     /// Draw the form with some given graphics backend.
     #[inline]
-    pub fn draw<G: Graphics<Texture=Texture>>(self, c: graphics::Context, g: &mut G) {
-        draw_form(self, c.transform, g, &c.draw_state);
+    pub fn draw<G: Graphics<Texture=Texture>>(self, w: f64, h: f64, g: &mut G) {
+        use graphics::Transformed;
+        use transform_2d::scale_y;
+        let context = graphics::Context::abs(w, h).trans(w / 2.0, h / 2.0);
+        let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
+        draw_form(self, matrix, g, &context.draw_state);
     }
 
 }
@@ -354,7 +357,7 @@ pub fn circle(r: f64) -> Shape {
 pub fn ngon(n: usize, r: f64) -> Shape {
     let t = 2.0 * PI / n as f64;
     let f = |i: f64| (r * (t*i).cos(), r * (t*i).sin());
-    let points = (0..n-1).map(|i| f(i as f64)).collect();
+    let points = (0..n).map(|i| f(i as f64)).collect();
     Shape(points)
 }
 
@@ -373,10 +376,13 @@ pub fn text(t: Text) -> Form {
 
 
 
-/// CUSTOM NON-ELM FUNCTION.
+/// 
+/// CUSTOM NON-ELM FUNCTIONS.
 /// 
 /// Normally Elm renders to html and javascript, however the aim of elmesque is to render to GL.
 ///
+
+
 /// This function draws a form with some given transform using the generic [Piston graphics]
 /// (https://github.com/PistonDevelopers/graphics) backend.
 fn draw_form<G: Graphics<Texture=Texture>>
@@ -409,14 +415,20 @@ fn draw_form<G: Graphics<Texture=Texture>>
                     // NOTE: join, dashing and dash_offset are not yet handled properly.
                     let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
                     let color = convert_color(color, alpha);
-                    for window in points.windows(2) {
-                        let ((x1, y1), (x2, y2)) = (window[0], window[1]);
+                    let mut draw_line = |(x1, y1), (x2, y2)| {
                         let line = match cap {
                             LineCap::Flat => graphics::Line::new(color, width / 2.0),
                             LineCap::Round => graphics::Line::round(color, width / 2.0),
                             LineCap::Padded => unimplemented!(),
                         };
                         line.draw([x1, y1, x2, y2], draw_state, matrix, g);
+                    };
+                    for window in points.windows(2) {
+                        let (a, b) = (window[0], window[1]);
+                        draw_line(a, b);
+                    }
+                    if points.len() > 2 {
+                        draw_line(points[points.len()-1], points[0])
                     }
                 },
                 ShapeStyle::Fill(fill_style) => match fill_style {
