@@ -4,16 +4,17 @@
 
 use std::f64::consts::PI;
 use std::num::{Float, Int};
-use std::num::NumCast;
+use std::num::cast;
 
 /// Convert turns to radians.
 pub fn turns<F: Float>(t: F) -> F {
-    NumCast::from(2.0 * PI).unwrap() / t
+    let f: F = cast(2.0 * PI).unwrap();
+    f / t
 }
 
 /// Convert degrees to radians.
 pub fn degrees<F: Float>(d: F) -> F {
-    d * NumCast::from(PI / 180.0).unwrap()
+    d * cast(PI / 180.0).unwrap()
 }
 
 /// The modulo function.
