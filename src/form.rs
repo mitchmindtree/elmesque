@@ -34,6 +34,7 @@
 
 
 use color::{Color, Gradient};
+use element::{self, Element, new_element};
 use graphics::{self, DrawState, Graphics};
 use std::f64::consts::PI;
 use std::num::Float;
@@ -128,7 +129,7 @@ pub enum BasicForm {
     OutlinedText(LineStyle, Text),
     Text(Text),
     Image(i32, i32, (i32, i32), Rc<Texture>),
-    //Element(Element),
+    Element(Element),
     Group(Transform2D, Vec<Form>),
 }
 
@@ -140,12 +141,6 @@ pub enum ShapeStyle {
     Fill(FillStyle),
 }
 
-
-// /// Turn any `Element` into a `Form`. This lets you use text, gifs, and video in your collage. This
-// /// means you can move, rotate, and scale an `Element` however you want.
-// pub fn to_form(element: Element) -> Form {
-//     form(BasicForm::Element(element))
-// }
 
 impl Form {
 
@@ -218,6 +213,13 @@ impl Form {
 }
 
 
+/// Turn any `Element` into a `Form`. This lets you use text, gifs, and video in your collage. This
+/// means you can move, rotate, and scale an `Element` however you want.
+pub fn to_form(element: Element) -> Form {
+    Form::new(BasicForm::Element(element))
+}
+
+
 /// Flatten many forms into a single `Form`. This lets you move and rotate them as a single unit,
 /// making it possible to build small, modular components.
 pub fn group(forms: Vec<Form>) -> Form {
@@ -243,11 +245,11 @@ pub fn sprite(w: i32, h: i32, pos: (i32, i32), texture: Rc<Texture>) -> Form {
 }
 
 
-// /// A collage is a collection of 2D forms. There are no strict positioning relationships between
-// /// forms, so you are free to do all kinds of 2D graphics.
-// pub fn collage(x: i64, y: i64, forms: Vec<Form>) -> Element {
-//     unimplemented!()
-// }
+/// A collage is a collection of 2D forms. There are no strict positioning relationships between
+/// forms, so you are free to do all kinds of 2D graphics.
+pub fn collage(w: i32, h: i32, forms: Vec<Form>) -> Element {
+    new_element(w, h, element::Prim::Collage(w, h, forms))
+}
 
 
 /// A path described by a sequence of points.
@@ -465,13 +467,17 @@ fn draw_form<G: Graphics<Texture=Texture>>
             let texture: &Texture = ::std::ops::Deref::deref(&texture);
             image.draw(texture, draw_state, matrix, g);
         },
+
         BasicForm::Group(group_transform, forms) => {
             let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
             for form in forms.into_iter() {
                 draw_form(form, matrix.clone(), g, draw_state);
             }
         },
-        //BasicForm::Element(Element),
+
+        BasicForm::Element(element) => {
+            unimplemented!();
+        },
     }
 }
 

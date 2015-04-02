@@ -9,7 +9,7 @@
 //! Ported to Rust by Mitchell Nordine.
 //!
 
-#![feature(core)]
+#![feature(box_syntax, core)]
 
 extern crate gfx_device_gl;
 extern crate gfx_texture;
@@ -18,6 +18,7 @@ extern crate vecmath;
 
 pub use color as colour;
 pub mod color;
+pub mod element;
 pub mod form;
 pub mod text;
 pub mod transform_2d;
