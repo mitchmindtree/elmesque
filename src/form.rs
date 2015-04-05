@@ -387,7 +387,7 @@ pub fn text(t: Text) -> Form {
 
 /// This function draws a form with some given transform using the generic [Piston graphics]
 /// (https://github.com/PistonDevelopers/graphics) backend.
-fn draw_form<G: Graphics<Texture=Texture>>
+pub fn draw_form<G: Graphics<Texture=Texture>>
 (form: Form, matrix: Matrix2d, g: &mut G, draw_state: &DrawState) {
     let Form { theta, scale, x, y, alpha, form } = form;
     let Transform2D(matrix) = Transform2D(matrix)
@@ -404,7 +404,7 @@ fn draw_form<G: Graphics<Texture=Texture>>
                 let ((x1, y1), (x2, y2)) = (window[0], window[1]);
                 let line = match cap {
                     LineCap::Flat => graphics::Line::new(color, width / 2.0),
-                    LineCap::Round => graphics::Line::round(color, width / 2.0),
+                    LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                     LineCap::Padded => unimplemented!(),
                 };
                 line.draw([x1, y1, x2, y2], draw_state, matrix, g);
@@ -420,7 +420,7 @@ fn draw_form<G: Graphics<Texture=Texture>>
                     let mut draw_line = |(x1, y1), (x2, y2)| {
                         let line = match cap {
                             LineCap::Flat => graphics::Line::new(color, width / 2.0),
-                            LineCap::Round => graphics::Line::round(color, width / 2.0),
+                            LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                             LineCap::Padded => unimplemented!(),
                         };
                         line.draw([x1, y1, x2, y2], draw_state, matrix, g);
@@ -475,13 +475,11 @@ fn draw_form<G: Graphics<Texture=Texture>>
             }
         },
 
-        BasicForm::Element(element) => {
-            unimplemented!();
-        },
+        BasicForm::Element(element) => element::draw_element(element, matrix, g, draw_state),
     }
 }
 
-/// Convert an elmesque color to a piston color.
+/// Convert an elmesque color to a piston-graphics color.
 fn convert_color(color: Color, alpha: f32) -> [f32; 4] {
     use color::hsl_to_rgb;
     let ((r, g, b), a) = match color {

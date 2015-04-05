@@ -17,24 +17,23 @@ use std::cell::RefCell;
 use std::rc::Rc;
 use piston::event::Event;
 use piston::events::Events;
-use piston::window::{Window, WindowSettings};
+use piston::window::{Size, Window, WindowSettings};
 
 fn main() {
     let window = GlutinWindow::new(
         shader_version::opengl::OpenGL::_3_2,
-        WindowSettings {
-            title: "Elmesque".to_string(),
-            size: [1180, 580],
-            fullscreen: false,
-            exit_on_esc: true,
-            samples: 4,
-        }
+        WindowSettings::new(
+            "Elmesque".to_string(),
+            Size { width: 1180, height: 580 },
+        )
+        .exit_on_esc(true)
+        .samples(4)
     );
     let mut device = GlDevice::new(|s| window.window.get_proc_address(s));
     let mut g2d = G2D::new(&mut device);
     let mut renderer = device.create_renderer();
-    let [w, h] = window.size();
-    let frame = gfx::Frame::new(w as u16, h as u16);
+    let Size { width, height } = window.size();
+    let frame = gfx::Frame::new(width as u16, height as u16);
     let window_ref = Rc::new(RefCell::new(window));
     let event_iter = Events::new(window_ref).ups(180).max_fps(60);
     let mut secs = 0.0;

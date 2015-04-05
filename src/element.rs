@@ -53,10 +53,12 @@
 //!
 
 use color::Color;
-use form::Form;
+use form::{self, Form};
+use graphics::{DrawState, Graphics};
 use self::Three::{P, Z, N};
 use std::rc::Rc;
 use Texture;
+use transform_2d::{self, Matrix2d};
 
 
 /// The global graphics unique identifier counter.
@@ -76,11 +78,11 @@ fn guid() -> Guid {
 /// An Element's Properties.
 #[derive(Clone, Debug)]
 pub struct Properties {
-    id: Guid,
-    width: i32,
-    height: i32,
-    opacity: f32,
-    color: Option<Color>,
+    pub id: Guid,
+    pub width: i32,
+    pub height: i32,
+    pub opacity: f32,
+    pub color: Option<Color>,
 }
 
 
@@ -90,8 +92,8 @@ pub struct Properties {
 /// position.
 #[derive(Clone, Debug)]
 pub struct Element {
-    props: Properties,
-    element: Prim,
+    pub props: Properties,
+    pub element: Prim,
 }
 
 
@@ -348,4 +350,131 @@ pub fn left() -> Direction { Direction::Left }
 pub fn right() -> Direction { Direction::Right }
 pub fn inward() -> Direction { Direction::In }
 pub fn outward() -> Direction { Direction::Out }
+
+
+
+
+
+
+
+
+
+
+
+
+/// 
+/// CUSTOM NON-ELM FUNCTIONS
+///
+
+
+/// Draw an Element.
+pub fn draw_element<G: Graphics<Texture=Texture>>
+(element: Element, matrix: Matrix2d, g: &mut G, draw_state: &DrawState) {
+    use transform_2d::Transform2D;
+    let Element { props, element } = element;
+    match element {
+
+        Prim::Image(style, w, h, texture) => {
+            let Properties { id, width, height, opacity, color } = props;
+            match style {
+                ImageStyle::Plain => {
+                    unimplemented!();
+                },
+                ImageStyle::Fitted => {
+                    unimplemented!();
+                },
+                ImageStyle::Cropped(x, y) => {
+                    unimplemented!();
+                },
+                ImageStyle::Tiled => {
+                    unimplemented!();
+                },
+            }
+        },
+
+        Prim::Container(position, box element) => {
+            let Position { horizontal, vertical, x, y } = position;
+            let Transform2D(matrix) = match (x, y) {
+                (Pos::Relative(x), Pos::Relative(y)) => {
+                    Transform2D(matrix).multiply(transform_2d::translation(x as f64, y as f64))
+                },
+                (Pos::Absolute(x), Pos::Relative(y)) => {
+                    transform_2d::matrix(1.0, 0.0, 0.0, 1.0, x as f64, 0.0)
+                        .multiply(transform_2d::translation(0.0, y as f64))
+                },
+                (Pos::Relative(x), Pos::Absolute(y)) => {
+                    transform_2d::matrix(1.0, 0.0, 0.0, 1.0, 0.0, y as f64)
+                        .multiply(transform_2d::translation(x as f64, 0.0))
+                },
+                (Pos::Absolute(x), Pos::Absolute(y)) => {
+                    transform_2d::matrix(1.0, 0.0, 0.0, 1.0, x as f64, y as f64)
+                },
+            };
+            let new_opacity = props.opacity * element.props.opacity;
+            let element = element.opacity(new_opacity);
+            draw_element(element, matrix, g, draw_state);
+        }
+
+        Prim::Flow(direction, elements) => {
+            let mut matrix = matrix;
+            match direction {
+                Direction::Up | Direction::Down => {
+                    let multi = if let Direction::Up = direction { 1.0 } else { -1.0 };
+                    let mut half_prev_height = 0.0;
+                    for element in elements.into_iter() {
+                        let new_opacity = props.opacity * element.props.opacity;
+                        let element = element.opacity(new_opacity);
+                        let half_height = height_of(&element) as f64 / 2.0;
+                        draw_element(element, matrix, g, draw_state);
+                        let y_trans = half_height + half_prev_height;
+                        let Transform2D(new_matrix) = Transform2D(matrix)
+                            .multiply(transform_2d::translation(0.0, y_trans * multi));
+                        matrix = new_matrix;
+                        half_prev_height = half_height;
+                    }
+                },
+                Direction::Left | Direction::Right => {
+                    let multi = if let Direction::Right = direction { 1.0 } else { -1.0 };
+                    let mut half_prev_width = 0.0;
+                    for element in elements.into_iter() {
+                        let new_opacity = props.opacity * element.props.opacity;
+                        let element = element.opacity(new_opacity);
+                        let half_width = width_of(&element) as f64 / 2.0;
+                        draw_element(element, matrix, g, draw_state);
+                        let x_trans = half_width + half_prev_width;
+                        let Transform2D(new_matrix) = Transform2D(matrix)
+                            .multiply(transform_2d::translation(x_trans * multi, 0.0));
+                        matrix = new_matrix;
+                        half_prev_width = half_width;
+                    }
+                },
+                Direction::Out => {
+                    for element in elements.into_iter() {
+                        let new_opacity = props.opacity * element.props.opacity;
+                        let element = element.opacity(new_opacity);
+                        draw_element(element, matrix, g, draw_state);
+                    }
+                }
+                Direction::In => {
+                    for element in elements.into_iter().rev() {
+                        let new_opacity = props.opacity * element.props.opacity;
+                        let element = element.opacity(new_opacity);
+                        draw_element(element, matrix, g, draw_state);
+                    }
+                }
+            }
+        },
+
+        Prim::Collage(w, h, forms) => {
+            for form in forms {
+                let original_alpha = form.alpha;
+                let form = form.alpha(original_alpha * props.opacity);
+                form::draw_form(form, matrix, g, draw_state);
+            }
+        },
+
+        Prim::Spacer => {},
+
+    }
+}
 

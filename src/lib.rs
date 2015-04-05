@@ -9,7 +9,7 @@
 //! Ported to Rust by Mitchell Nordine.
 //!
 
-#![feature(box_syntax, core)]
+#![feature(box_patterns, box_syntax, core)]
 
 extern crate gfx_device_gl;
 extern crate gfx_texture;

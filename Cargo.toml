@@ -37,6 +37,9 @@ version = "*"
 git = "https://github.com/gfx-rs/gfx_device_gl.git"
 version = "*"
 
+[dependencies.piston2d-graphics]
+git = "https://github.com/PistonDevelopers/graphics.git"
+version = "*"
+
 [dependencies]
-piston2d-graphics = "*"
 vecmath = "*"
