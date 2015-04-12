@@ -14,6 +14,7 @@
 extern crate gfx_device_gl;
 extern crate gfx_texture;
 extern crate graphics;
+extern crate num;
 extern crate vecmath;
 
 pub use color as colour;
@@ -24,4 +25,4 @@ pub mod text;
 pub mod transform_2d;
 pub mod utils;
 
-pub type Texture = ::gfx_texture::Texture<::gfx_device_gl::GlResources>;
+pub type Texture = ::gfx_texture::Texture<::gfx_device_gl::Resources>;

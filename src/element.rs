@@ -375,10 +375,18 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
     match element {
 
         Prim::Image(style, w, h, texture) => {
+            use graphics::Image;
             let Properties { id, width, height, opacity, color } = props;
             match style {
                 ImageStyle::Plain => {
-                    unimplemented!();
+                    // let image = graphics::Image {
+                    //     color: None,
+                    //     rectangle: None,
+                    //     source_rectangle: Some([src_x, src_y, w, h]),
+                    // };
+                    let image = Image::new();
+                    let texture: &Texture = ::std::ops::Deref::deref(&texture);
+                    image.draw(texture, draw_state, matrix, g);
                 },
                 ImageStyle::Fitted => {
                     unimplemented!();

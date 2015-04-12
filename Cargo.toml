@@ -42,4 +42,5 @@ git = "https://github.com/PistonDevelopers/graphics.git"
 version = "*"
 
 [dependencies]
+num = "*"
 vecmath = "*"

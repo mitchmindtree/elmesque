@@ -5,18 +5,15 @@ extern crate gfx_device_gl;
 extern crate gfx_graphics;
 extern crate glutin_window;
 extern crate graphics;
+extern crate num;
 extern crate shader_version;
 extern crate piston;
 
 use elmesque::form::Form;
-use gfx_device_gl::GlDevice;
-use gfx_graphics::{gfx, G2D};
+use gfx_graphics::{gfx, Gfx2d};
 use gfx_graphics::gfx::traits::*;
 use glutin_window::GlutinWindow;
-use std::cell::RefCell;
-use std::rc::Rc;
-use piston::event::Event;
-use piston::events::Events;
+use piston::event::{Event, Events};
 use piston::window::{Size, Window, WindowSettings};
 
 fn main() {
@@ -29,18 +26,17 @@ fn main() {
         .exit_on_esc(true)
         .samples(4)
     );
-    let mut device = GlDevice::new(|s| window.window.get_proc_address(s));
-    let mut g2d = G2D::new(&mut device);
-    let mut renderer = device.create_renderer();
+    let (mut device, mut factory) = gfx_device_gl::create(|s| window.window.get_proc_address(s));
+    let mut g2d = Gfx2d::new(&mut device, &mut factory);
+    let mut renderer = factory.create_renderer();
     let Size { width, height } = window.size();
-    let frame = gfx::Frame::new(width as u16, height as u16);
-    let window_ref = Rc::new(RefCell::new(window));
-    let event_iter = Events::new(window_ref).ups(180).max_fps(60);
+    let frame = gfx::Frame::empty(width as u16, height as u16);
+    let event_iter = window.events().ups(180).max_fps(60);
     let mut secs = 0.0;
     for event in event_iter {
         match event {
             Event::Render(args) => {
-                g2d.draw(&mut renderer, &frame, |_, graphics| {
+                g2d.draw(&mut renderer, &frame, args.viewport(), |_, graphics| {
                     graphics::clear([0.0, 0.0, 0.0, 0.5], graphics);
                     let (w, h) = (args.width as f64, args.height as f64);
 
@@ -65,8 +61,9 @@ pub fn elmesque_form(secs: f64) -> Form {
     use elmesque::color::{blue, dark_blue, light_blue, dark_purple};
     use elmesque::form::{circle, group, ngon, oval, rect, solid};
     use elmesque::utils::{degrees};
-    use std::num::Float;
+    use num::Float;
 
+    // Time to get creative!
     group(vec![
 
         rect(60.0, 40.0)

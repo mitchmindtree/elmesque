@@ -37,7 +37,7 @@ use color::{Color, Gradient};
 use element::{self, Element, new_element};
 use graphics::{self, DrawState, Graphics};
 use std::f64::consts::PI;
-use std::num::Float;
+use num::Float;
 use std::rc::Rc;
 use text::Text;
 use Texture;

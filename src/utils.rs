@@ -3,17 +3,18 @@
 //!
 
 use std::f64::consts::PI;
-use std::num::{Float, Int};
-use std::num::cast;
+use num::Float;
+use num::PrimInt as Int;
+use std::num::{cast, NumCast};
 
 /// Convert turns to radians.
-pub fn turns<F: Float>(t: F) -> F {
+pub fn turns<F: Float + NumCast>(t: F) -> F {
     let f: F = cast(2.0 * PI).unwrap();
     f / t
 }
 
 /// Convert degrees to radians.
-pub fn degrees<F: Float>(d: F) -> F {
+pub fn degrees<F: Float + NumCast>(d: F) -> F {
     d * cast(PI / 180.0).unwrap()
 }
 
@@ -21,8 +22,8 @@ pub fn degrees<F: Float>(d: F) -> F {
 #[inline]
 pub fn modulo<I: Int>(a: I, b: I) -> I {
     match a % b {
-        r if (r > Int::zero() && b < Int::zero())
-          || (r < Int::zero() && b > Int::zero()) => (r + b),
+        r if (r > I::zero() && b < I::zero())
+          || (r < I::zero() && b > I::zero()) => (r + b),
         r                                         => r,
     }
 }

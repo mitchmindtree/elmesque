@@ -10,7 +10,7 @@
 
 use utils::{degrees, fmod, min, max, turns};
 use std::f32::consts::PI;
-use std::num::Float;
+use num::Float;
 
 
 /// Color supporting RGB and HSL variants.
