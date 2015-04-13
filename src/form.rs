@@ -33,6 +33,7 @@
 //!
 
 
+use {GlyphCache, Texture};
 use color::{Color, Gradient};
 use element::{self, Element, new_element};
 use graphics::{self, DrawState, Graphics};
@@ -40,7 +41,6 @@ use std::f64::consts::PI;
 use num::Float;
 use std::rc::Rc;
 use text::Text;
-use Texture;
 use transform_2d::{self, Matrix2d, Transform2D};
 
 
@@ -155,39 +155,40 @@ impl Form {
         }
     }
 
-    /// Move a form by the given amount. this is a relative translation so `shift(10.0, 10.0, form) would
-    /// move `form` ten pixels up and ten pixels to the right.
+    /// Move a form by the given amount. this is a relative translation so `shift(10.0, 10.0, form)
+    /// would move `form` ten pixels up and ten pixels to the right.
     #[inline]
     pub fn shift(self, x: f64, y: f64) -> Form {
         Form { x: self.x + x, y: self.y + y, ..self }
     }
 
 
-    /// Move a shape in the x direction. This is relative so `shift_x(10.0, form)` moves `form` 10 pixels
-    /// to the right.
+    /// Move a shape in the x direction. This is relative so `shift_x(10.0, form)` moves `form` 10
+    /// pixels to the right.
     #[inline]
     pub fn shift_x(self, x: f64) -> Form {
         Form { x: self.x + x, ..self }
     }
 
 
-    /// Move a shape in the y direction. This is relative so `shift_y(10.0, form)` moves `form upwards
-    /// by 10 pixels.
+    /// Move a shape in the y direction. This is relative so `shift_y(10.0, form)` moves `form
+    /// upwards by 10 pixels.
     #[inline]
     pub fn shift_y(self, y: f64) -> Form {
         Form { y: self.y + y, ..self }
     }
 
 
-    /// Scale a form by a given factor. Scaling by 2 doubles both dimensions and quadruples the area.
+    /// Scale a form by a given factor. Scaling by 2 doubles both dimensions and quadruples the
+    /// area.
     #[inline]
     pub fn scale(self, scale: f64) -> Form {
         Form { scale: self.scale * scale, ..self }
     }
 
 
-    /// Rotate a form by a given angle. Rotate takes radians and turns things counterclockwise. So to
-    /// turn `form` 30 degrees to the left you would say `rotate(degrees(30), form)`.
+    /// Rotate a form by a given angle. Rotate takes radians and turns things counterclockwise.
+    /// So to turn `form` 30 degrees to the left you would say `rotate(degrees(30), form)`.
     #[inline]
     pub fn rotate(self, theta: f64) -> Form {
         Form { theta: self.theta + theta, ..self }
@@ -198,16 +199,6 @@ impl Form {
     #[inline]
     pub fn alpha(self, alpha: f32) -> Form {
         Form { alpha: alpha, ..self }
-    }
-
-    /// Draw the form with some given graphics backend.
-    #[inline]
-    pub fn draw<G: Graphics<Texture=Texture>>(self, w: f64, h: f64, g: &mut G) {
-        use graphics::Transformed;
-        use transform_2d::scale_y;
-        let context = graphics::Context::abs(w, h).trans(w / 2.0, h / 2.0);
-        let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
-        draw_form(self, matrix, g, &context.draw_state);
     }
 
 }
@@ -387,8 +378,13 @@ pub fn text(t: Text) -> Form {
 
 /// This function draws a form with some given transform using the generic [Piston graphics]
 /// (https://github.com/PistonDevelopers/graphics) backend.
-pub fn draw_form<G: Graphics<Texture=Texture>>
-(form: Form, matrix: Matrix2d, g: &mut G, draw_state: &DrawState) {
+pub fn draw_form<'a, G: Graphics<Texture=Texture>>(
+    form: Form,
+    matrix: Matrix2d,
+    backend: &mut G,
+    maybe_glyph_cache: &mut Option<&mut GlyphCache<'a>>,
+    draw_state: &DrawState
+) {
     let Form { theta, scale, x, y, alpha, form } = form;
     let Transform2D(matrix) = Transform2D(matrix)
         .multiply(transform_2d::translation(x, y))
@@ -400,14 +396,21 @@ pub fn draw_form<G: Graphics<Texture=Texture>>
             // NOTE: join, dashing and dash_offset are not yet handled properly.
             let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
             let color = convert_color(color, alpha);
+            let mut draw_line = |(x1, y1), (x2, y2)| {
+                if dashing.is_empty() {
+                    let line = match cap {
+                        LineCap::Flat => graphics::Line::new(color, width / 2.0),
+                        LineCap::Round => graphics::Line::new_round(color, width / 2.0),
+                        LineCap::Padded => unimplemented!(),
+                    };
+                    line.draw([x1, y1, x2, y2], draw_state, matrix, backend);
+                } else {
+                    unimplemented!();
+                }
+            };
             for window in points.windows(2) {
-                let ((x1, y1), (x2, y2)) = (window[0], window[1]);
-                let line = match cap {
-                    LineCap::Flat => graphics::Line::new(color, width / 2.0),
-                    LineCap::Round => graphics::Line::new_round(color, width / 2.0),
-                    LineCap::Padded => unimplemented!(),
-                };
-                line.draw([x1, y1, x2, y2], draw_state, matrix, g);
+                let (a, b) = (window[0], window[1]);
+                draw_line(a, b);
             }
         },
 
@@ -423,7 +426,7 @@ pub fn draw_form<G: Graphics<Texture=Texture>>
                             LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                             LineCap::Padded => unimplemented!(),
                         };
-                        line.draw([x1, y1, x2, y2], draw_state, matrix, g);
+                        line.draw([x1, y1, x2, y2], draw_state, matrix, backend);
                     };
                     for window in points.windows(2) {
                         let (a, b) = (window[0], window[1]);
@@ -438,9 +441,9 @@ pub fn draw_form<G: Graphics<Texture=Texture>>
                         let color = convert_color(color, alpha);
                         let polygon = graphics::Polygon::new(color);
                         let points: Vec<_> = points.into_iter().map(|(x, y)| [x, y]).collect();
-                        polygon.draw(&points[..], draw_state, matrix, g);
+                        polygon.draw(&points[..], draw_state, matrix, backend);
                     },
-                    FillStyle::Texture(path_buf) => {
+                    FillStyle::Texture(texture) => {
                         unimplemented!();
                     },
                     FillStyle::Grad(gradient) => {
@@ -455,7 +458,19 @@ pub fn draw_form<G: Graphics<Texture=Texture>>
         },
 
         BasicForm::Text(text) => {
-            unimplemented!();
+            if let Some(ref mut glyph_cache) = *maybe_glyph_cache {
+                for unit in text.sequence.into_iter() {
+                    use text::Style as TextStyle;
+                    use text::TextUnit;
+                    let TextUnit { string, style } = unit;
+                    let TextStyle { typeface, height, color, bold, italic, line, monospace } = style;
+                    let height = height.unwrap_or(16.0);
+                    let typeface = typeface.unwrap_or_else(|| unimplemented!());
+                    let color = convert_color(color, alpha);
+                    graphics::text::Text::colored(color, height as u32)
+                        .draw(&string[..], *glyph_cache, draw_state, matrix, backend);
+                }
+            }
         },
 
         BasicForm::Image(src_x, src_y, (w, h), texture) => {
@@ -465,17 +480,18 @@ pub fn draw_form<G: Graphics<Texture=Texture>>
                 source_rectangle: Some([src_x, src_y, w, h]),
             };
             let texture: &Texture = ::std::ops::Deref::deref(&texture);
-            image.draw(texture, draw_state, matrix, g);
+            image.draw(texture, draw_state, matrix, backend);
         },
 
         BasicForm::Group(group_transform, forms) => {
             let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
             for form in forms.into_iter() {
-                draw_form(form, matrix.clone(), g, draw_state);
+                draw_form(form, matrix.clone(), backend, maybe_glyph_cache, draw_state);
             }
         },
 
-        BasicForm::Element(element) => element::draw_element(element, matrix, g, draw_state),
+        BasicForm::Element(element) =>
+            element::draw_element(element, matrix, backend, maybe_glyph_cache, draw_state),
     }
 }
 

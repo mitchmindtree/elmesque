@@ -52,13 +52,13 @@
 //!   top_left_at, top_right_at, bottom_left_at, bottom_right_at
 //!
 
+use {GlyphCache, Texture};
 use color::Color;
 use form::{self, Form};
 use graphics::{DrawState, Graphics};
 use self::Three::{P, Z, N};
 use std::rc::Rc;
-use Texture;
-use transform_2d::{self, Matrix2d};
+use transform_2d::{self, Matrix2d, Transform2D};
 
 
 /// The global graphics unique identifier counter.
@@ -179,6 +179,17 @@ impl Element {
         new_element(width_of(&self) + width_of(&other),
                     ::std::cmp::max(height_of(&self), height_of(&other)),
                     Prim::Flow(right(), vec![self, other]))
+    }
+
+    /// Draw the form with some given graphics backend.
+    #[inline]
+    pub fn draw<'a, G: Graphics<Texture=Texture>>(self, renderer: Renderer<'a, G>) {
+        use graphics::{Context, Transformed};
+        use transform_2d::scale_y;
+        let Renderer { width, height, backend, mut maybe_glyph_cache } = renderer;
+        let context = Context::abs(width, height).trans(width / 2.0, height / 2.0);
+        let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
+        draw_element(self, matrix, backend, &mut maybe_glyph_cache, &context.draw_state);
     }
 
 }
@@ -358,19 +369,49 @@ pub fn outward() -> Direction { Direction::Out }
 
 
 
-
-
-
-
 /// 
 /// CUSTOM NON-ELM FUNCTIONS
 ///
 
 
+
+/// Used for rendering elmesque `Element`s.
+pub struct Renderer<'a, G: Graphics<Texture=Texture> + 'a> {
+    width: f64,
+    height: f64,
+    backend: &'a mut G,
+    maybe_glyph_cache: Option<&'a mut GlyphCache<'static>>,
+}
+
+impl<'a, G: Graphics<Texture=Texture> + 'a> Renderer<'a, G> {
+
+    /// Construct a renderer, used for rendering elmesque `Element`s.
+    pub fn new(width: f64, height: f64, backend: &'a mut G) -> Renderer<'a, G> {
+        Renderer {
+            width: width,
+            height: height,
+            backend: backend,
+            maybe_glyph_cache: None,
+        }
+    }
+
+    /// Builder method for constructing a Renderer with a GlyphCache for drawing text.
+    pub fn glyph_cache(self, glyph_cache: &'a mut GlyphCache<'static>) -> Renderer<'a, G> {
+        Renderer { maybe_glyph_cache: Some(glyph_cache), ..self }
+    }
+
+}
+
+
+
 /// Draw an Element.
-pub fn draw_element<G: Graphics<Texture=Texture>>
-(element: Element, matrix: Matrix2d, g: &mut G, draw_state: &DrawState) {
-    use transform_2d::Transform2D;
+pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
+    element: Element,
+    matrix: Matrix2d,
+    backend: &mut G,
+    maybe_glyph_cache: &mut Option<&mut GlyphCache<'a>>,
+    draw_state: &DrawState
+) {
     let Element { props, element } = element;
     match element {
 
@@ -386,7 +427,7 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
                     // };
                     let image = Image::new();
                     let texture: &Texture = ::std::ops::Deref::deref(&texture);
-                    image.draw(texture, draw_state, matrix, g);
+                    image.draw(texture, draw_state, matrix, backend);
                 },
                 ImageStyle::Fitted => {
                     unimplemented!();
@@ -420,7 +461,7 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
             };
             let new_opacity = props.opacity * element.props.opacity;
             let element = element.opacity(new_opacity);
-            draw_element(element, matrix, g, draw_state);
+            draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
         }
 
         Prim::Flow(direction, elements) => {
@@ -433,7 +474,7 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
                         let half_height = height_of(&element) as f64 / 2.0;
-                        draw_element(element, matrix, g, draw_state);
+                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
                         let y_trans = half_height + half_prev_height;
                         let Transform2D(new_matrix) = Transform2D(matrix)
                             .multiply(transform_2d::translation(0.0, y_trans * multi));
@@ -448,7 +489,7 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
                         let half_width = width_of(&element) as f64 / 2.0;
-                        draw_element(element, matrix, g, draw_state);
+                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
                         let x_trans = half_width + half_prev_width;
                         let Transform2D(new_matrix) = Transform2D(matrix)
                             .multiply(transform_2d::translation(x_trans * multi, 0.0));
@@ -460,14 +501,14 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
                     for element in elements.into_iter() {
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
-                        draw_element(element, matrix, g, draw_state);
+                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
                     }
                 }
                 Direction::In => {
                     for element in elements.into_iter().rev() {
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
-                        draw_element(element, matrix, g, draw_state);
+                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
                     }
                 }
             }
@@ -477,7 +518,7 @@ pub fn draw_element<G: Graphics<Texture=Texture>>
             for form in forms {
                 let original_alpha = form.alpha;
                 let form = form.alpha(original_alpha * props.opacity);
-                form::draw_form(form, matrix, g, draw_state);
+                form::draw_form(form, matrix, backend, maybe_glyph_cache, draw_state);
             }
         },
 

@@ -19,10 +19,6 @@ version = "*"
 git = "https://github.com/PistonDevelopers/piston.git"
 version = "*"
 
-[dev-dependencies.piston2d-gfx_graphics]
-git = "https://github.com/PistonDevelopers/gfx_graphics.git"
-version = "*"
-
 [dev-dependencies.shader_version]
 git = "https://github.com/PistonDevelopers/shader_version"
 #version = "*"
@@ -35,6 +31,10 @@ version = "*"
 
 [dependencies.gfx_device_gl]
 git = "https://github.com/gfx-rs/gfx_device_gl.git"
+version = "*"
+
+[dependencies.piston2d-gfx_graphics]
+git = "https://github.com/PistonDevelopers/gfx_graphics.git"
 version = "*"
 
 [dependencies.piston2d-graphics]

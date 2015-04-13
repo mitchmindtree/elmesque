@@ -9,7 +9,7 @@ extern crate num;
 extern crate shader_version;
 extern crate piston;
 
-use elmesque::form::Form;
+use elmesque::{Form, GlyphCache, Renderer};
 use gfx_graphics::{gfx, Gfx2d};
 use gfx_graphics::gfx::traits::*;
 use glutin_window::GlutinWindow;
@@ -30,24 +30,31 @@ fn main() {
     let mut g2d = Gfx2d::new(&mut device, &mut factory);
     let mut renderer = factory.create_renderer();
     let Size { width, height } = window.size();
-    let frame = gfx::Frame::empty(width as u16, height as u16);
+    let output = factory.make_fake_output(width as u16, height as u16);
+    let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
+    let mut glyph_cache = GlyphCache::new(&font_path, &mut factory).unwrap();
     let event_iter = window.events().ups(180).max_fps(60);
     let mut secs = 0.0;
     for event in event_iter {
         match event {
             Event::Render(args) => {
-                g2d.draw(&mut renderer, &frame, args.viewport(), |_, graphics| {
+                g2d.draw(&mut renderer, &output, args.viewport(), |_, graphics| {
                     graphics::clear([0.0, 0.0, 0.0, 0.5], graphics);
                     let (w, h) = (args.width as f64, args.height as f64);
 
+                    let renderer = Renderer::new(w, h, graphics).glyph_cache(&mut glyph_cache);
 
-                    // Construct a Form and draw it.
-                    elmesque_form(secs).draw(w, h, graphics)
+                    // Construct some free-form graphics aka a `Form`.
+                    let form = elmesque_demo_form(secs);
+
+                    // Convert the form to an `Element` for rendering.
+                    elmesque::form::collage(w as i32, h as i32, vec![form]).draw(renderer);
 
 
                 });
                 device.submit(renderer.as_buffer());
                 renderer.reset();
+                glyph_cache.update(&mut factory);
             },
             Event::Update(args) => secs += args.dt,
             _ => (),
@@ -57,9 +64,9 @@ fn main() {
 
 
 /// Demo of grouping multiple forms into a new single form, transformable at any stage.
-pub fn elmesque_form(secs: f64) -> Form {
+pub fn elmesque_demo_form(secs: f64) -> Form {
     use elmesque::color::{blue, dark_blue, light_blue, dark_purple};
-    use elmesque::form::{circle, group, ngon, oval, rect, solid};
+    use elmesque::form::{circle, group, ngon, oval, point_path, rect, solid, traced};
     use elmesque::utils::{degrees};
     use num::Float;
 
@@ -124,8 +131,23 @@ pub fn elmesque_form(secs: f64) -> Form {
             .alpha(((secs * 4.5).cos() * 0.25 + 0.35) as f32)
             .rotate(secs * 1.5 + degrees(90.0)),
 
+        traced(
+            solid(light_blue()),
+            point_path(vec![(-500.0, 100.0), (0.0, 250.0 * secs.sin()), (500.0, 100.0)])
+        ).alpha(((secs * 0.2).sin() * 0.25 + 0.35) as f32),
+            
+        traced(
+            solid(blue()),
+            point_path(vec![(-500.0, 0.0), (0.0, 0.0), (500.0, 0.0)])
+        ).alpha(((secs * 4.5).cos() * 0.25 + 0.35) as f32),
+
+        traced(
+            solid(dark_blue()),
+            point_path(vec![(-500.0, -100.0), (0.0, -250.0 * secs.sin()), (500.0, -100.0)])
+        ).alpha(((secs * 0.15).cos() * 0.25 + 0.35) as f32),
+
     ]).rotate(degrees(secs.sin() * 360.0))
-        .scale((secs * 0.05).cos() * 0.2 + 0.9)
+      .scale((secs * 0.05).cos() * 0.2 + 0.9)
 
 }
 

@@ -6,14 +6,14 @@ use std::path::PathBuf;
 /// Drawable Text.
 #[derive(Clone, Debug)]
 pub struct Text {
-    sequence: Vec<TextUnit>,
+    pub sequence: Vec<TextUnit>,
 }
 
 
 #[derive(Clone, Debug)]
-struct TextUnit {
-    string: String,
-    style: Style,
+pub struct TextUnit {
+    pub string: String,
+    pub style: Style,
 }
 
 /// Styles for lines on text. This allows you to add an underline, an overline, or strike out text.
@@ -41,13 +41,13 @@ pub enum Line {
 ///
 #[derive(Clone, Debug)]
 pub struct Style {
-    typeface: Option<PathBuf>,
-    height: Option<f64>,
-    color: Color,
-    bold: bool,
-    italic: bool,
-    line: Option<Line>,
-    monospace: bool,
+    pub typeface: Option<PathBuf>,
+    pub height: Option<f64>,
+    pub color: Color,
+    pub bold: bool,
+    pub italic: bool,
+    pub line: Option<Line>,
+    pub monospace: bool,
 }
 
 impl Style {
