@@ -161,8 +161,8 @@ impl Element {
     /// Stack elements vertically. To put `a` above `b` you would say: `a.above(b)`
     #[inline]
     pub fn above(self, other: Element) -> Element {
-        new_element(::std::cmp::max(width_of(&self), width_of(&other)),
-                    height_of(&self) + height_of(&other),
+        new_element(::std::cmp::max(self.get_width(), other.get_width()),
+                    self.get_height() + other.get_height(),
                     Prim::Flow(down(), vec![self, other]))
     }
 
@@ -176,10 +176,19 @@ impl Element {
     ///   `a.beside(b)`
     #[inline]
     pub fn beside(self, other: Element) -> Element {
-        new_element(width_of(&self) + width_of(&other),
-                    ::std::cmp::max(height_of(&self), height_of(&other)),
+        new_element(self.get_width() + other.get_width(),
+                    ::std::cmp::max(self.get_height(), other.get_height()),
                     Prim::Flow(right(), vec![self, other]))
     }
+
+    /// Return the width of the Element.
+    pub fn get_width(&self) -> i32 { self.props.width }
+
+    /// Return the height of the Element.
+    pub fn get_height(&self) -> i32 { self.props.height }
+
+    /// Return the size of the Element.
+    pub fn get_size(&self) -> (i32, i32) { (self.props.width, self.props.height) }
 
     /// Draw the form with some given graphics backend.
     #[inline]
@@ -193,17 +202,6 @@ impl Element {
         draw_element(self, matrix, backend, &mut maybe_character_cache, &context.draw_state);
     }
 
-}
-
-
-/// Return the width of the Element.
-pub fn width_of(e: &Element) -> i32 {
-    e.props.width
-}
-
-/// Return the height of the Element.
-pub fn height_of(e: &Element) -> i32 {
-    e.props.height
 }
 
 /// Return the size of the Element.
@@ -307,10 +305,10 @@ pub enum Direction { Up, Down, Left, Right, In, Out }
 /// element in the list. The result is an `Element`.
 pub fn flow(dir: Direction, elements: Vec<Element>) -> Element {
     if elements.is_empty() { return empty() }
-    let max_w = elements.iter().map(|e| width_of(e)).max().unwrap();
-    let max_h = elements.iter().map(|e| height_of(e)).max().unwrap();
-    let sum_w = elements.iter().fold(0, |total, e| total + width_of(e));
-    let sum_h = elements.iter().fold(0, |total, e| total + height_of(e));
+    let max_w = elements.iter().map(|e| e.get_width()).max().unwrap();
+    let max_h = elements.iter().map(|e| e.get_height()).max().unwrap();
+    let sum_w = elements.iter().fold(0, |total, e| total + e.get_width());
+    let sum_h = elements.iter().fold(0, |total, e| total + e.get_height());
     let new_flow = |w: i32, h: i32| new_element(w, h, Prim::Flow(dir, elements));
     match dir {
         Direction::Up | Direction::Down    => new_flow(max_w, sum_h),
@@ -321,8 +319,8 @@ pub fn flow(dir: Direction, elements: Vec<Element>) -> Element {
 
 /// Layer elements on top of each other, starting from the bottom.
 pub fn layers(elements: Vec<Element>) -> Element {
-    let max_w = elements.iter().map(|e| width_of(e)).max().unwrap();
-    let max_h = elements.iter().map(|e| height_of(e)).max().unwrap();
+    let max_w = elements.iter().map(|e| e.get_width()).max().unwrap();
+    let max_h = elements.iter().map(|e| e.get_height()).max().unwrap();
     new_element(max_w, max_h, Prim::Flow(outward(), elements))
 }
 
@@ -474,7 +472,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     for element in elements.into_iter() {
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
-                        let half_height = height_of(&element) as f64 / 2.0;
+                        let half_height = element.get_height() as f64 / 2.0;
                         draw_element(element, matrix, backend, maybe_character_cache, draw_state);
                         let y_trans = half_height + half_prev_height;
                         let Transform2D(new_matrix) = Transform2D(matrix)
@@ -489,7 +487,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     for element in elements.into_iter() {
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
-                        let half_width = width_of(&element) as f64 / 2.0;
+                        let half_width = element.get_width() as f64 / 2.0;
                         draw_element(element, matrix, backend, maybe_character_cache, draw_state);
                         let x_trans = half_width + half_prev_width;
                         let Transform2D(new_matrix) = Transform2D(matrix)
