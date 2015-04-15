@@ -52,12 +52,12 @@
 //!   top_left_at, top_right_at, bottom_left_at, bottom_right_at
 //!
 
-use {GlyphCache, Texture};
 use color::Color;
 use form::{self, Form};
+use graphics::character::CharacterCache;
 use graphics::{DrawState, Graphics};
 use self::Three::{P, Z, N};
-use std::rc::Rc;
+use std::path::PathBuf;
 use transform_2d::{self, Matrix2d, Transform2D};
 
 
@@ -183,13 +183,14 @@ impl Element {
 
     /// Draw the form with some given graphics backend.
     #[inline]
-    pub fn draw<'a, G: Graphics<Texture=Texture>>(self, renderer: Renderer<'a, G>) {
+    pub fn draw<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>
+    (self, renderer: Renderer<'a, C, G>) {
         use graphics::{Context, Transformed};
         use transform_2d::scale_y;
-        let Renderer { width, height, backend, mut maybe_glyph_cache } = renderer;
+        let Renderer { width, height, backend, mut maybe_character_cache } = renderer;
         let context = Context::abs(width, height).trans(width / 2.0, height / 2.0);
         let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
-        draw_element(self, matrix, backend, &mut maybe_glyph_cache, &context.draw_state);
+        draw_element(self, matrix, backend, &mut maybe_character_cache, &context.draw_state);
     }
 
 }
@@ -242,7 +243,7 @@ pub fn empty() -> Element {
 /// The various kinds of Elements.
 #[derive(Clone, Debug)]
 pub enum Prim {
-    Image(ImageStyle, i32, i32, Rc<Texture>),
+    Image(ImageStyle, i32, i32, PathBuf),
     Container(Position, Box<Element>),
     Flow(Direction, Vec<Element>),
     Collage(i32, i32, Vec<Form>),
@@ -261,25 +262,25 @@ pub enum ImageStyle {
 
 
 /// Create an image given a width, height and texture.
-pub fn image(w: i32, h: i32, texture: Rc<Texture>) -> Element {
-    new_element(w, h, Prim::Image(ImageStyle::Plain, w, h, texture))
+pub fn image(w: i32, h: i32, path: PathBuf) -> Element {
+    new_element(w, h, Prim::Image(ImageStyle::Plain, w, h, path))
 }
 
 /// Create a fitted image given a width, height and texture. This will crop the picture to best
 /// fill the given dimensions.
-pub fn fitted_image(w: i32, h: i32, texture: Rc<Texture>) -> Element {
-    new_element(w, h, Prim::Image(ImageStyle::Fitted, w, h, texture))
+pub fn fitted_image(w: i32, h: i32, path: PathBuf) -> Element {
+    new_element(w, h, Prim::Image(ImageStyle::Fitted, w, h, path))
 }
 
 /// Create a cropped image. Take a rectangle out of the picture starting at the given top left
 /// coordinate.
-pub fn cropped_image(x: i32, y: i32, w: i32, h: i32, texture: Rc<Texture>) -> Element {
-    new_element(w, h, Prim::Image(ImageStyle::Cropped(x, y), w, h, texture))
+pub fn cropped_image(x: i32, y: i32, w: i32, h: i32, path: PathBuf) -> Element {
+    new_element(w, h, Prim::Image(ImageStyle::Cropped(x, y), w, h, path))
 }
 
 /// Create a tiled image given a width, height and texture.
-pub fn tiled_image(w: i32, h: i32, texture: Rc<Texture>) -> Element {
-    new_element(w, h, Prim::Image(ImageStyle::Tiled, w, h, texture))
+pub fn tiled_image(w: i32, h: i32, path: PathBuf) -> Element {
+    new_element(w, h, Prim::Image(ImageStyle::Tiled, w, h, path))
 }
 
 
@@ -376,28 +377,28 @@ pub fn outward() -> Direction { Direction::Out }
 
 
 /// Used for rendering elmesque `Element`s.
-pub struct Renderer<'a, G: Graphics<Texture=Texture> + 'a> {
+pub struct Renderer<'a, C: CharacterCache + 'a, G: Graphics<Texture=C::Texture> + 'a> {
     width: f64,
     height: f64,
     backend: &'a mut G,
-    maybe_glyph_cache: Option<&'a mut GlyphCache<'static>>,
+    maybe_character_cache: Option<&'a mut C>,
 }
 
-impl<'a, G: Graphics<Texture=Texture> + 'a> Renderer<'a, G> {
+impl<'a, C: CharacterCache + 'a, G: Graphics<Texture=C::Texture> + 'a> Renderer<'a, C, G> {
 
     /// Construct a renderer, used for rendering elmesque `Element`s.
-    pub fn new(width: f64, height: f64, backend: &'a mut G) -> Renderer<'a, G> {
+    pub fn new(width: f64, height: f64, backend: &'a mut G) -> Renderer<'a, C, G> {
         Renderer {
             width: width,
             height: height,
             backend: backend,
-            maybe_glyph_cache: None,
+            maybe_character_cache: None,
         }
     }
 
     /// Builder method for constructing a Renderer with a GlyphCache for drawing text.
-    pub fn glyph_cache(self, glyph_cache: &'a mut GlyphCache<'static>) -> Renderer<'a, G> {
-        Renderer { maybe_glyph_cache: Some(glyph_cache), ..self }
+    pub fn character_cache(self, character_cache: &'a mut C) -> Renderer<'a, C, G> {
+        Renderer { maybe_character_cache: Some(character_cache), ..self }
     }
 
 }
@@ -405,18 +406,17 @@ impl<'a, G: Graphics<Texture=Texture> + 'a> Renderer<'a, G> {
 
 
 /// Draw an Element.
-pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
+pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     element: Element,
     matrix: Matrix2d,
     backend: &mut G,
-    maybe_glyph_cache: &mut Option<&mut GlyphCache<'a>>,
+    maybe_character_cache: &mut Option<&mut C>,
     draw_state: &DrawState
 ) {
     let Element { props, element } = element;
     match element {
 
-        Prim::Image(style, w, h, texture) => {
-            use graphics::Image;
+        Prim::Image(style, w, h, path) => {
             let Properties { id, width, height, opacity, color } = props;
             match style {
                 ImageStyle::Plain => {
@@ -425,9 +425,10 @@ pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
                     //     rectangle: None,
                     //     source_rectangle: Some([src_x, src_y, w, h]),
                     // };
-                    let image = Image::new();
-                    let texture: &Texture = ::std::ops::Deref::deref(&texture);
-                    image.draw(texture, draw_state, matrix, backend);
+                    // let image = Image::new();
+                    // let texture: &Texture = ::std::ops::Deref::deref(&texture);
+                    // image.draw(texture, draw_state, matrix, backend);
+                    unimplemented!();
                 },
                 ImageStyle::Fitted => {
                     unimplemented!();
@@ -461,7 +462,7 @@ pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
             };
             let new_opacity = props.opacity * element.props.opacity;
             let element = element.opacity(new_opacity);
-            draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
+            draw_element(element, matrix, backend, maybe_character_cache, draw_state);
         }
 
         Prim::Flow(direction, elements) => {
@@ -474,7 +475,7 @@ pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
                         let half_height = height_of(&element) as f64 / 2.0;
-                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
+                        draw_element(element, matrix, backend, maybe_character_cache, draw_state);
                         let y_trans = half_height + half_prev_height;
                         let Transform2D(new_matrix) = Transform2D(matrix)
                             .multiply(transform_2d::translation(0.0, y_trans * multi));
@@ -489,7 +490,7 @@ pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
                         let half_width = width_of(&element) as f64 / 2.0;
-                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
+                        draw_element(element, matrix, backend, maybe_character_cache, draw_state);
                         let x_trans = half_width + half_prev_width;
                         let Transform2D(new_matrix) = Transform2D(matrix)
                             .multiply(transform_2d::translation(x_trans * multi, 0.0));
@@ -501,14 +502,14 @@ pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
                     for element in elements.into_iter() {
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
-                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
+                        draw_element(element, matrix, backend, maybe_character_cache, draw_state);
                     }
                 }
                 Direction::In => {
                     for element in elements.into_iter().rev() {
                         let new_opacity = props.opacity * element.props.opacity;
                         let element = element.opacity(new_opacity);
-                        draw_element(element, matrix, backend, maybe_glyph_cache, draw_state);
+                        draw_element(element, matrix, backend, maybe_character_cache, draw_state);
                     }
                 }
             }
@@ -518,7 +519,7 @@ pub fn draw_element<'a, G: Graphics<Texture=Texture>>(
             for form in forms {
                 let original_alpha = form.alpha;
                 let form = form.alpha(original_alpha * props.opacity);
-                form::draw_form(form, matrix, backend, maybe_glyph_cache, draw_state);
+                form::draw_form(form, matrix, backend, maybe_character_cache, draw_state);
             }
         },
 

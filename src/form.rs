@@ -33,13 +33,13 @@
 //!
 
 
-use {GlyphCache, Texture};
 use color::{Color, Gradient};
 use element::{self, Element, new_element};
 use graphics::{self, DrawState, Graphics};
+use graphics::character::CharacterCache;
 use std::f64::consts::PI;
 use num::Float;
-use std::rc::Rc;
+use std::path::PathBuf;
 use text::Text;
 use transform_2d::{self, Matrix2d, Transform2D};
 
@@ -59,7 +59,7 @@ pub struct Form {
 #[derive(Clone, Debug)]
 pub enum FillStyle {
     Solid(Color),
-    Texture(Rc<Texture>),
+    Texture(PathBuf),
     Grad(Gradient),
 }
 
@@ -128,7 +128,7 @@ pub enum BasicForm {
     Shape(ShapeStyle, Shape),
     OutlinedText(LineStyle, Text),
     Text(Text),
-    Image(i32, i32, (i32, i32), Rc<Texture>),
+    Image(i32, i32, (i32, i32), PathBuf),
     Element(Element),
     Group(Transform2D, Vec<Form>),
 }
@@ -231,8 +231,8 @@ pub fn traced(style: LineStyle, path: PointPath) -> Form {
 
 
 /// Create a sprite from a sprite sheet. It cuts out a rectangle at a given position.
-pub fn sprite(w: i32, h: i32, pos: (i32, i32), texture: Rc<Texture>) -> Form {
-    Form::new(BasicForm::Image(w, h, pos, texture))
+pub fn sprite(w: i32, h: i32, pos: (i32, i32), path: PathBuf) -> Form {
+    Form::new(BasicForm::Image(w, h, pos, path))
 }
 
 
@@ -283,8 +283,8 @@ impl Shape {
     /// Create a textured shape.
     /// The texture is described by some path and is tiled to fill the entire shape.
     #[inline]
-    pub fn textured(self, texture: Rc<Texture>) -> Form {
-        self.fill(FillStyle::Texture(texture))
+    pub fn textured(self, path: PathBuf) -> Form {
+        self.fill(FillStyle::Texture(path))
     }
 
 
@@ -378,11 +378,11 @@ pub fn text(t: Text) -> Form {
 
 /// This function draws a form with some given transform using the generic [Piston graphics]
 /// (https://github.com/PistonDevelopers/graphics) backend.
-pub fn draw_form<'a, G: Graphics<Texture=Texture>>(
+pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     form: Form,
     matrix: Matrix2d,
     backend: &mut G,
-    maybe_glyph_cache: &mut Option<&mut GlyphCache<'a>>,
+    maybe_glyph_cache: &mut Option<&mut C>,
     draw_state: &DrawState
 ) {
     let Form { theta, scale, x, y, alpha, form } = form;
@@ -443,7 +443,7 @@ pub fn draw_form<'a, G: Graphics<Texture=Texture>>(
                         let points: Vec<_> = points.into_iter().map(|(x, y)| [x, y]).collect();
                         polygon.draw(&points[..], draw_state, matrix, backend);
                     },
-                    FillStyle::Texture(texture) => {
+                    FillStyle::Texture(path) => {
                         unimplemented!();
                     },
                     FillStyle::Grad(gradient) => {
@@ -474,14 +474,15 @@ pub fn draw_form<'a, G: Graphics<Texture=Texture>>(
             }
         },
 
-        BasicForm::Image(src_x, src_y, (w, h), texture) => {
-            let image = graphics::Image {
-                color: None,
-                rectangle: None,
-                source_rectangle: Some([src_x, src_y, w, h]),
-            };
-            let texture: &Texture = ::std::ops::Deref::deref(&texture);
-            image.draw(texture, draw_state, matrix, backend);
+        BasicForm::Image(src_x, src_y, (w, h), path) => {
+            // let image = graphics::Image {
+            //     color: None,
+            //     rectangle: None,
+            //     source_rectangle: Some([src_x, src_y, w, h]),
+            // };
+            // let texture: &Texture = ::std::ops::Deref::deref(&texture);
+            // image.draw(texture, draw_state, matrix, backend);
+            unimplemented!();
         },
 
         BasicForm::Group(group_transform, forms) => {

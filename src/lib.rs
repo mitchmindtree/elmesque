@@ -27,9 +27,5 @@ pub mod element;
 pub mod form;
 pub mod text;
 pub mod transform_2d;
-pub mod ui;
 pub mod utils;
-
-pub type GlyphCache<'a> = ::gfx_graphics::GlyphCache<'a, ::gfx_device_gl::Resources>;
-pub type Texture = ::gfx_texture::Texture<::gfx_device_gl::Resources>;
 
