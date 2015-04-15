@@ -11,9 +11,6 @@
 
 #![feature(box_patterns, box_syntax, core)]
 
-extern crate gfx_device_gl;
-extern crate gfx_graphics;
-extern crate gfx_texture;
 extern crate graphics;
 extern crate num;
 extern crate vecmath;
