@@ -10,13 +10,14 @@ extern crate shader_version;
 extern crate piston;
 
 use elmesque::{Form, GlyphCache, Renderer};
-use gfx_graphics::{gfx, Gfx2d};
+use gfx_graphics::Gfx2d;
 use gfx_graphics::gfx::traits::*;
 use glutin_window::GlutinWindow;
 use piston::event::{Event, Events};
 use piston::window::{Size, Window, WindowSettings};
 
 fn main() {
+
     let window = GlutinWindow::new(
         shader_version::opengl::OpenGL::_3_2,
         WindowSettings::new(
@@ -44,7 +45,7 @@ fn main() {
 
                     let renderer = Renderer::new(w, h, graphics).glyph_cache(&mut glyph_cache);
 
-                    // Construct some free-form graphics aka a `Form`.
+                    // Construct some freeform graphics aka a `Form`.
                     let form = elmesque_demo_form(secs);
 
                     // Convert the form to an `Element` for rendering.
@@ -65,8 +66,9 @@ fn main() {
 
 /// Demo of grouping multiple forms into a new single form, transformable at any stage.
 pub fn elmesque_demo_form(secs: f64) -> Form {
-    use elmesque::color::{blue, dark_blue, light_blue, dark_purple};
-    use elmesque::form::{circle, group, ngon, oval, point_path, rect, solid, traced};
+    use elmesque::color::{blue, dark_blue, light_blue, dark_purple, white};
+    use elmesque::form::{circle, group, ngon, oval, point_path, rect, solid, text, traced};
+    use elmesque::text::Text;
     use elmesque::utils::{degrees};
     use num::Float;
 
@@ -145,6 +147,11 @@ pub fn elmesque_demo_form(secs: f64) -> Form {
             solid(dark_blue()),
             point_path(vec![(-500.0, -100.0), (0.0, -250.0 * secs.sin()), (500.0, -100.0)])
         ).alpha(((secs * 0.15).cos() * 0.25 + 0.35) as f32),
+
+        text(
+            Text::from_string("elmesque".to_string())
+                .color(white())
+        ),
 
     ]).rotate(degrees(secs.sin() * 360.0))
       .scale((secs * 0.05).cos() * 0.2 + 0.9)

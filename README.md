@@ -10,13 +10,6 @@ All credit and thanks goes to Evan Czaplicki for all algorithms included within.
 Ported to Rust by Mitchell Nordine.
 
 
-ToDo
-----
-
-- Port Graphics.Element
-- Port Graphics.Input
-- examples/test.rs
-
 
 Usage
 -----

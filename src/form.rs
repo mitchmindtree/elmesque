@@ -458,6 +458,7 @@ pub fn draw_form<'a, G: Graphics<Texture=Texture>>(
         },
 
         BasicForm::Text(text) => {
+            let Transform2D(matrix) = Transform2D(matrix).multiply(::transform_2d::scale_y(-1.0));
             if let Some(ref mut glyph_cache) = *maybe_glyph_cache {
                 for unit in text.sequence.into_iter() {
                     use text::Style as TextStyle;
@@ -465,7 +466,7 @@ pub fn draw_form<'a, G: Graphics<Texture=Texture>>(
                     let TextUnit { string, style } = unit;
                     let TextStyle { typeface, height, color, bold, italic, line, monospace } = style;
                     let height = height.unwrap_or(16.0);
-                    let typeface = typeface.unwrap_or_else(|| unimplemented!());
+                    //let typeface = typeface.unwrap_or_else(|| unimplemented!());
                     let color = convert_color(color, alpha);
                     graphics::text::Text::colored(color, height as u32)
                         .draw(&string[..], *glyph_cache, draw_state, matrix, backend);

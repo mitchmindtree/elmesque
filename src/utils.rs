@@ -10,7 +10,7 @@ use std::num::{cast, NumCast};
 /// Convert turns to radians.
 pub fn turns<F: Float + NumCast>(t: F) -> F {
     let f: F = cast(2.0 * PI).unwrap();
-    f / t
+    f * t
 }
 
 /// Convert degrees to radians.
