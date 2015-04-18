@@ -49,7 +49,7 @@ fn main() {
                     let form = elmesque_demo_form(secs);
 
                     // Convert the form to an `Element` for rendering.
-                    elmesque::form::collage(w as i32, h as i32, vec![form]).draw(renderer);
+                    elmesque::form::collage(w as i32, h as i32, vec![form]).draw(&mut renderer);
 
 
                 });
@@ -75,60 +75,49 @@ pub fn elmesque_demo_form(secs: f64) -> Form {
     // Time to get creative!
     group(vec![
 
-        rect(60.0, 40.0)
-            .filled(blue())
+        rect(60.0, 40.0).filled(blue())
             .shift(secs.sin() * 50.0, secs.cos() * 50.0)
             .alpha(((secs * 200.0).cos() * 0.5 + 0.5) as f32)
             .rotate(-secs),
 
-        rect(100.0, 10.0)
-            .filled(dark_blue())
+        rect(100.0, 10.0).filled(dark_blue())
             .shift((secs * 5.0).sin() * 200.0, (secs * 5.0).cos() * 200.0)
             .alpha(((secs * 2.0).cos() * 0.5 + 0.5) as f32)
             .rotate(-(secs * 5.0)),
 
-        rect(10.0, 300.0)
-            .filled(blue())
+        rect(10.0, 300.0).filled(blue())
             .alpha(((secs * 3.0).sin() * 0.25 + 0.75) as f32)
             .rotate(-(secs * 1.5)),
 
-        rect(5.0, (secs * 0.1).sin() * 600.0 + 300.0)
-            .filled(light_blue())
+        rect(5.0, (secs * 0.1).sin() * 600.0 + 300.0).filled(light_blue())
             .alpha(((secs).cos() * 0.25 + 0.75) as f32)
             .rotate(secs * 0.75),
 
-        rect(3.0, 2000.0)
-            .filled(dark_blue())
+        rect(3.0, 2000.0).filled(dark_blue())
             .alpha(((secs * 100.0).cos() * 0.5 + 0.25) as f32)
             .rotate(-(secs * 0.5)),
 
-        oval(3.0, 2000.0 * (secs * 60.0).sin())
-            .filled(light_blue())
+        oval(3.0, 2000.0 * (secs * 60.0).sin()).filled(light_blue())
             .alpha(((secs * 100.0).cos() * 0.5 + 0.25) as f32)
             .rotate(-(secs * 0.6)),
 
-        rect(10.0, 750.0)
-            .filled(blue())
+        rect(10.0, 750.0).filled(blue())
             .alpha(((secs * 2.0).cos() * 0.5 + 0.25) as f32)
             .rotate(-(secs * 1.85)),
 
-        circle((secs * 0.5).sin() * 1500.0)
-            .outlined(solid(dark_purple()))
+        circle((secs * 0.5).sin() * 1500.0).outlined(solid(dark_purple()))
             .alpha(((secs * 0.2).sin() * 0.25 + 0.35) as f32)
             .rotate(-(secs * 0.5)),
 
-        ngon(12, (secs * 0.1).cos() * 100.0 + 300.0)
-            .filled(blue())
+        ngon(12, (secs * 0.1).cos() * 100.0 + 300.0).filled(blue())
             .alpha((0.25 * secs.cos()) as f32)
             .rotate(secs * 0.5),
 
-        ngon(9, (secs * 0.1).cos() * 200.0 + 250.0)
-            .outlined(solid(dark_blue()))
+        ngon(9, (secs * 0.1).cos() * 200.0 + 250.0).outlined(solid(dark_blue()))
             .alpha(((0.33 * secs).sin() + 0.15) as f32)
             .rotate(secs * 0.2),
 
-        rect(300.0, 20.0)
-            .filled(light_blue())
+        rect(300.0, 20.0).filled(light_blue())
             .shift((secs * 1.5).cos() * 250.0, (secs * 1.5).sin() * 250.0)
             .alpha(((secs * 4.5).cos() * 0.25 + 0.35) as f32)
             .rotate(secs * 1.5 + degrees(90.0)),
@@ -148,10 +137,7 @@ pub fn elmesque_demo_form(secs: f64) -> Form {
             point_path(vec![(-500.0, -100.0), (0.0, -250.0 * secs.sin()), (500.0, -100.0)])
         ).alpha(((secs * 0.15).cos() * 0.25 + 0.35) as f32),
 
-        text(
-            Text::from_string("elmesque".to_string())
-                .color(white())
-        ),
+        text(Text::from_string("elmesque".to_string()).color(white())),
 
     ]).rotate(degrees(secs.sin() * 360.0))
       .scale((secs * 0.05).cos() * 0.2 + 0.9)

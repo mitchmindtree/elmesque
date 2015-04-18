@@ -230,6 +230,12 @@ pub fn traced(style: LineStyle, path: PointPath) -> Form {
 }
 
 
+/// Create a line with a given line style.
+pub fn line(style: LineStyle, x1: f64, y1: f64, x2: f64, y2: f64) -> Form {
+    traced(style, segment((x1, y1), (x2, y2)))
+}
+
+
 /// Create a sprite from a sprite sheet. It cuts out a rectangle at a given position.
 pub fn sprite(w: i32, h: i32, pos: (i32, i32), path: PathBuf) -> Form {
     Form::new(BasicForm::Image(w, h, pos, path))

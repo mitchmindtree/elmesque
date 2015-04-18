@@ -187,19 +187,29 @@ impl Element {
     /// Return the height of the Element.
     pub fn get_height(&self) -> i32 { self.props.height }
 
-    /// Return the size of the Element.
+    /// Return the size of the Element's bounding rectangle.
     pub fn get_size(&self) -> (i32, i32) { (self.props.width, self.props.height) }
 
     /// Draw the form with some given graphics backend.
     #[inline]
     pub fn draw<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>
-    (self, renderer: Renderer<'a, C, G>) {
+    (self, renderer: &mut Renderer<'a, C, G>) {
         use graphics::{Context, Transformed};
         use transform_2d::scale_y;
-        let Renderer { width, height, backend, mut maybe_character_cache } = renderer;
-        let context = Context::abs(width, height).trans(width / 2.0, height / 2.0);
+        let Renderer {
+            ref width,
+            ref height,
+            ref mut backend,
+            ref mut maybe_character_cache,
+        } = *renderer;
+        let context = Context::abs(*width, *height).trans(*width / 2.0, *height / 2.0);
         let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
-        draw_element(self, matrix, backend, &mut maybe_character_cache, &context.draw_state);
+        draw_element(self, matrix, *backend, maybe_character_cache, &context.draw_state);
+    }
+
+    /// Return whether or not a point is over the element.
+    pub fn is_over(&self, x: i32, y: i32) -> bool {
+        unimplemented!();
     }
 
 }
