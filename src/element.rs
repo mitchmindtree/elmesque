@@ -192,8 +192,11 @@ impl Element {
 
     /// Draw the form with some given graphics backend.
     #[inline]
-    pub fn draw<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>
-    (self, renderer: &mut Renderer<'a, C, G>) {
+    pub fn draw<'a, C, G>(self, renderer: &mut Renderer<'a, C, G>)
+        where
+            C: CharacterCache,
+            G: Graphics<Texture=C::Texture>,
+    {
         use graphics::{Context, Transformed};
         use transform_2d::scale_y;
         let Renderer {
@@ -385,14 +388,14 @@ pub fn outward() -> Direction { Direction::Out }
 
 
 /// Used for rendering elmesque `Element`s.
-pub struct Renderer<'a, C: CharacterCache + 'a, G: Graphics<Texture=C::Texture> + 'a> {
+pub struct Renderer<'a, C: 'a, G: 'a> {
     width: f64,
     height: f64,
     backend: &'a mut G,
     maybe_character_cache: Option<&'a mut C>,
 }
 
-impl<'a, C: CharacterCache + 'a, G: Graphics<Texture=C::Texture> + 'a> Renderer<'a, C, G> {
+impl<'a, C, G> Renderer<'a, C, G> {
 
     /// Construct a renderer, used for rendering elmesque `Element`s.
     pub fn new(width: f64, height: f64, backend: &'a mut G) -> Renderer<'a, C, G> {
