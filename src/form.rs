@@ -397,7 +397,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     form: Form,
     matrix: Matrix2d,
     backend: &mut G,
-    maybe_glyph_cache: &mut Option<&mut C>,
+    maybe_character_cache: &mut Option<&mut C>,
     draw_state: &DrawState
 ) {
     let Form { theta, scale, x, y, alpha, form } = form;
@@ -474,17 +474,26 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
 
         BasicForm::Text(text) => {
             let Transform2D(matrix) = Transform2D(matrix).multiply(::transform_2d::scale_y(-1.0));
-            if let Some(ref mut glyph_cache) = *maybe_glyph_cache {
-                for unit in text.sequence.into_iter() {
-                    use text::Style as TextStyle;
-                    use text::TextUnit;
-                    let TextUnit { string, style } = unit;
-                    let TextStyle { typeface, height, color, bold, italic, line, monospace } = style;
+            if let Some(ref mut character_cache) = *maybe_character_cache {
+                use text::Style as TextStyle;
+                use text::TextUnit;
+                let (total_width, max_height) = text.sequence.iter().fold((0.0, 0.0), |(w, h), unit| {
+                    let TextUnit { ref string, ref style } = *unit;
+                    let TextStyle { ref typeface, height, color, bold, italic, line, monospace } = *style;
                     let height = height.unwrap_or(16.0);
-                    //let typeface = typeface.unwrap_or_else(|| unimplemented!());
+                    let new_total_width = w + character_cache.width(height as u32, &string);
+                    let new_max_height = if height > h { height } else { h };
+                    (new_total_width, new_max_height)
+                });
+                let Transform2D(matrix) = Transform2D(matrix)
+                    .multiply(transform_2d::translation(-total_width / 2.0, max_height / 3.0)); // TODO: FIX THIS (3.0)
+                for unit in text.sequence.iter() {
+                    let TextUnit { ref string, ref style } = *unit;
+                    let TextStyle { ref typeface, height, color, bold, italic, line, monospace } = *style;
+                    let height = height.unwrap_or(16.0);
                     let color = convert_color(color, alpha);
                     graphics::text::Text::colored(color, height as u32)
-                        .draw(&string[..], *glyph_cache, draw_state, matrix, backend);
+                        .draw(&string[..], *character_cache, draw_state, matrix, backend);
                 }
             }
         },
@@ -503,12 +512,12 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
         BasicForm::Group(group_transform, forms) => {
             let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
             for form in forms.into_iter() {
-                draw_form(form, matrix.clone(), backend, maybe_glyph_cache, draw_state);
+                draw_form(form, matrix.clone(), backend, maybe_character_cache, draw_state);
             }
         },
 
         BasicForm::Element(element) =>
-            element::draw_element(element, matrix, backend, maybe_glyph_cache, draw_state),
+            element::draw_element(element, matrix, backend, maybe_character_cache, draw_state),
     }
 }
 

@@ -1,6 +1,7 @@
 #![feature(slice_patterns)]
 
 extern crate elmesque;
+extern crate gfx;
 extern crate gfx_device_gl;
 extern crate gfx_graphics;
 extern crate glutin_window;
@@ -10,8 +11,8 @@ extern crate shader_version;
 extern crate piston;
 
 use elmesque::{Form, Renderer};
+use gfx::traits::*;
 use gfx_graphics::{Gfx2d, GlyphCache};
-use gfx_graphics::gfx::traits::*;
 use glutin_window::GlutinWindow;
 use piston::event::{Event, Events};
 use piston::window::{Size, Window, WindowSettings};

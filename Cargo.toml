@@ -23,6 +23,9 @@ version = "*"
 git = "https://github.com/PistonDevelopers/shader_version"
 #version = "*"
 
+[dev-dependencies.gfx]
+git = "https://github.com/gfx-rs/gfx-rs"
+
 [dev-dependencies.piston-gfx_texture]
 git = "https://github.com/PistonDevelopers/gfx_texture.git"
 version = "*"
