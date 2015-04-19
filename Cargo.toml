@@ -36,6 +36,9 @@ git = "https://github.com/PistonDevelopers/gfx_graphics.git"
 version = "*"
 
 
+[dependencies.color]
+git = "https://github.com/PistonDevelopers/color.git"
+
 [dependencies]
 piston2d-graphics = "*"
 num = "*"

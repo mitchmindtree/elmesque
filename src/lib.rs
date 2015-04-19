@@ -11,6 +11,7 @@
 
 #![feature(box_patterns, box_syntax, core)]
 
+extern crate color as color_lib;
 extern crate graphics;
 extern crate num;
 extern crate vecmath;
@@ -18,8 +19,8 @@ extern crate vecmath;
 pub use element::{Element, Renderer};
 pub use form::{Form};
 
-pub use color as colour;
-pub mod color;
+pub use color_lib as color;
+pub use color_lib as colour;
 pub mod element;
 pub mod form;
 pub mod text;
