@@ -92,6 +92,8 @@ pub struct LineStyle {
 
 
 impl LineStyle {
+
+    /// The default LineStyle.
     pub fn default() -> LineStyle {
         LineStyle {
             color: ::color::black(),
@@ -102,6 +104,13 @@ impl LineStyle {
             dash_offset: 0,
         }
     }
+
+    /// The LineStyle with some given width.
+    #[inline]
+    pub fn width(self, w: f64) -> LineStyle {
+        LineStyle { width: w, ..self }
+    }
+
 }
 
 
