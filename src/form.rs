@@ -486,7 +486,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     (new_total_width, new_max_height)
                 });
                 let Transform2D(matrix) = Transform2D(matrix)
-                    .multiply(transform_2d::translation(-total_width / 2.0, max_height / 3.0)); // TODO: FIX THIS (3.0)
+                    .multiply(transform_2d::translation(-(total_width / 2.0).floor(), (max_height / 3.0).floor())); // TODO: FIX THIS (3.0)
                 for unit in text.sequence.iter() {
                     let TextUnit { ref string, ref style } = *unit;
                     let TextStyle { ref typeface, height, color, bold, italic, line, monospace } = *style;
