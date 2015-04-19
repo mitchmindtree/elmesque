@@ -43,7 +43,7 @@ fn main() {
                     graphics::clear([0.0, 0.0, 0.0, 0.5], graphics);
                     let (w, h) = (args.width as f64, args.height as f64);
 
-                    let renderer = Renderer::new(w, h, graphics).character_cache(&mut glyph_cache);
+                    let mut renderer = Renderer::new(w, h, graphics).character_cache(&mut glyph_cache);
 
                     // Construct some freeform graphics aka a `Form`.
                     let form = elmesque_demo_form(secs);

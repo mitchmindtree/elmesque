@@ -517,7 +517,7 @@ fn convert_color(color: Color, alpha: f32) -> [f32; 4] {
     use color::hsl_to_rgb;
     let ((r, g, b), a) = match color {
         Color::Hsla(h, s, l, a) => (hsl_to_rgb(h, s, l), a),
-        Color::Rgba(r, g, b, a) => ((r as f32 / 255.0, g as f32 / 255.0, b as f32 / 255.0), a),
+        Color::Rgba(r, g, b, a) => ((r, g, b), a),
     };
     [r, g, b, a * alpha]
 }

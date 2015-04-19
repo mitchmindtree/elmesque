@@ -39,7 +39,9 @@ version = "*"
 [dependencies.color]
 git = "https://github.com/PistonDevelopers/color.git"
 
+[dependencies.piston2d-graphics]
+git = "https://github.com/PistonDevelopers/graphics.git"
+
 [dependencies]
-piston2d-graphics = "*"
 num = "*"
 vecmath = "*"
