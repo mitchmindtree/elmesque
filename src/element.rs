@@ -155,7 +155,7 @@ impl Element {
     /// tons of ways to set the `Position`.
     #[inline]
     pub fn container(self, w: i32, h: i32, pos: Position) -> Element {
-        new_element(w, h, Prim::Container(pos, box self))
+        new_element(w, h, Prim::Container(pos, Box::new(self)))
     }
 
     /// Stack elements vertically. To put `a` above `b` you would say: `a.above(b)`
@@ -453,7 +453,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
             }
         },
 
-        Prim::Container(position, box element) => {
+        Prim::Container(position, element) => {
             let Position { horizontal, vertical, x, y } = position;
             let Transform2D(matrix) = match (x, y) {
                 (Pos::Relative(x), Pos::Relative(y)) => {
