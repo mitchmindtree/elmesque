@@ -3,9 +3,9 @@
 //!
 
 use std::f64::consts::PI;
-use num::Float;
+use num::{ Float, NumCast };
 use num::PrimInt as Int;
-use std::num::{cast, NumCast};
+use num::traits::cast;
 
 /// Convert turns to radians.
 pub fn turns<F: Float + NumCast>(t: F) -> F {

@@ -9,8 +9,6 @@
 //! Ported to Rust by Mitchell Nordine.
 //!
 
-#![feature(box_patterns, box_syntax, core)]
-
 extern crate color as color_lib;
 extern crate graphics;
 extern crate num;
@@ -26,4 +24,3 @@ pub mod form;
 pub mod text;
 pub mod transform_2d;
 pub mod utils;
-
