@@ -38,7 +38,6 @@ use element::{self, Element, new_element};
 use graphics::{self, DrawState, Graphics};
 use graphics::character::CharacterCache;
 use std::f64::consts::PI;
-use num::Float;
 use std::path::PathBuf;
 use text::Text;
 use transform_2d::{self, Matrix2d, Transform2D};
@@ -164,6 +163,7 @@ impl Form {
         }
     }
 
+
     /// Move a form by the given amount. this is a relative translation so `shift(10.0, 10.0, form)
     /// would move `form` ten pixels up and ten pixels to the right.
     #[inline]
@@ -176,7 +176,7 @@ impl Form {
     /// pixels to the right.
     #[inline]
     pub fn shift_x(self, x: f64) -> Form {
-        Form { x: self.x + x, ..self }
+        self.shift(x, 0.0)
     }
 
 
@@ -184,7 +184,7 @@ impl Form {
     /// upwards by 10 pixels.
     #[inline]
     pub fn shift_y(self, y: f64) -> Form {
-        Form { y: self.y + y, ..self }
+        self.shift(0.0, y)
     }
 
 
@@ -485,12 +485,14 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     let new_max_height = if height > h { height } else { h };
                     (new_total_width, new_max_height)
                 });
+                let x_offset = -(total_width / 2.0).floor();
+                let y_offset = (max_height / 3.0).floor(); // TODO: FIX THIS (3.0)
                 let Transform2D(matrix) = Transform2D(matrix)
-                    .multiply(transform_2d::translation(-(total_width / 2.0).floor(), (max_height / 3.0).floor())); // TODO: FIX THIS (3.0)
+                    .multiply(transform_2d::translation(x_offset, y_offset));
                 for unit in text.sequence.iter() {
                     let TextUnit { ref string, ref style } = *unit;
                     let TextStyle { ref typeface, height, color, bold, italic, line, monospace } = *style;
-                    let height = height.unwrap_or(16.0);
+                    let height = height.unwrap_or(16.0).floor();
                     let color = convert_color(color, alpha);
                     graphics::text::Text::colored(color, height as u32)
                         .draw(&string[..], *character_cache, draw_state, matrix, backend);

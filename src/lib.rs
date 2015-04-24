@@ -9,16 +9,16 @@
 //! Ported to Rust by Mitchell Nordine.
 //!
 
-extern crate color as color_lib;
 extern crate graphics;
-extern crate num;
+extern crate rand;
+extern crate rustc_serialize;
 extern crate vecmath;
 
+pub use color as colour;
 pub use element::{Element, Renderer};
 pub use form::{Form};
 
-pub use color_lib as color;
-pub use color_lib as colour;
+pub mod color;
 pub mod element;
 pub mod form;
 pub mod text;
