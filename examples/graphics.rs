@@ -41,7 +41,6 @@ fn main() {
         match event {
             Event::Render(args) => {
                 g2d.draw(&mut renderer, &output, args.viewport(), |_, graphics| {
-                    graphics::clear([0.0, 0.0, 0.0, 0.5], graphics);
                     let (w, h) = (args.width as f64, args.height as f64);
 
                     let mut renderer = Renderer::new(w, h, graphics).character_cache(&mut glyph_cache);
@@ -50,7 +49,9 @@ fn main() {
                     let form = elmesque_demo_form(secs);
 
                     // Convert the form to an `Element` for rendering.
-                    elmesque::form::collage(w as i32, h as i32, vec![form]).draw(&mut renderer);
+                    elmesque::form::collage(w as i32, h as i32, vec![form])
+                        .clear(elmesque::color::rgba(0.0, 0.0, 0.0, 0.5))
+                        .draw(&mut renderer);
 
 
                 });

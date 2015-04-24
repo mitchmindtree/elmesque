@@ -158,6 +158,14 @@ impl Element {
         new_element(w, h, Prim::Container(pos, Box::new(self)))
     }
 
+    /// Put an element in a cleared wrapper. The color provided will be the color that clears the
+    /// screen before rendering the contained element.
+    #[inline]
+    pub fn clear(self, color: Color) -> Element {
+        new_element(self.get_width(), self.get_height(),
+            Prim::Cleared(color, Box::new(self)))
+    }
+
     /// Stack elements vertically. To put `a` above `b` you would say: `a.above(b)`
     #[inline]
     pub fn above(self, other: Element) -> Element {
@@ -258,6 +266,7 @@ pub enum Prim {
     Container(Position, Box<Element>),
     Flow(Direction, Vec<Element>),
     Collage(i32, i32, Vec<Form>),
+    Cleared(Color, Box<Element>),
     Spacer,
 }
 
@@ -532,6 +541,11 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                 let form = form.alpha(original_alpha * props.opacity);
                 form::draw_form(form, matrix, backend, maybe_character_cache, draw_state);
             }
+        },
+
+        Prim::Cleared(color, element) => {
+            backend.clear_color(color.to_fsa());
+            draw_element(*element, matrix, backend, maybe_character_cache, draw_state);
         },
 
         Prim::Spacer => {},
