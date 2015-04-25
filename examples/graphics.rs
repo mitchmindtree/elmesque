@@ -50,7 +50,7 @@ fn main() {
 
                     // Convert the form to an `Element` for rendering.
                     elmesque::form::collage(w as i32, h as i32, vec![form])
-                        .clear(elmesque::color::rgba(0.0, 0.0, 0.0, 0.5))
+                        .clear(elmesque::color::black())
                         .draw(&mut renderer);
 
 

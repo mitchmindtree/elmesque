@@ -43,6 +43,7 @@ version = "*"
 git = "https://github.com/PistonDevelopers/graphics.git"
 
 [dependencies]
+num = "*"
 rand = "*"
 rustc-serialize = "*"
 vecmath = "*"

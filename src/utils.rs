@@ -1,4 +1,7 @@
 
+use num::{Float, NumCast};
+use num::PrimInt as Int;
+use num::traits::cast;
 use std::f32::consts::PI;
 
 /// Clamp a f32 between 0f32 and 1f32.
@@ -7,22 +10,23 @@ pub fn clampf32(f: f32) -> f32 {
 }
 
 /// Convert degrees to radians.
-pub fn degrees(d: f32) -> f32 {
-    d * PI / 180.0
+pub fn degrees<F: Float + NumCast>(d: F) -> F {
+    d * cast(PI / 180.0).unwrap()
 }
 
 /// Convert turns to radians.
-pub fn turns(t: f32) -> f32 {
-    2.0 * PI * t
+pub fn turns<F: Float + NumCast>(t: F) -> F {
+    let f: F = cast(2.0 * PI).unwrap();
+    f * t
 }
 
 /// The modulo function.
 #[inline]
-pub fn modulo(a: i32, b: i32) -> i32 {
+pub fn modulo<I: Int>(a: I, b: I) -> I {
     match a % b {
-        r if (r > 0 && b < 0)
-          || (r < 0 && b > 0) => r + b,
-        r                     => r,
+        r if (r > I::zero() && b < I::zero())
+          || (r < I::zero() && b > I::zero()) => r + b,
+        r                                     => r,
     }
 }
 

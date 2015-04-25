@@ -10,6 +10,7 @@
 //!
 
 extern crate graphics;
+extern crate num;
 extern crate rand;
 extern crate rustc_serialize;
 extern crate vecmath;
