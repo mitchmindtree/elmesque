@@ -1,4 +1,3 @@
-#![feature(slice_patterns)]
 
 extern crate elmesque;
 extern crate gfx;
