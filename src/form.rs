@@ -394,22 +394,23 @@ pub fn text(t: Text) -> Form {
 /// This function draws a form with some given transform using the generic [Piston graphics]
 /// (https://github.com/PistonDevelopers/graphics) backend.
 pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
-    form: Form,
+    form: &Form,
+    alpha: f32,
     matrix: Matrix2d,
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
     draw_state: &DrawState
 ) {
-    let Form { theta, scale, x, y, alpha, form } = form;
+    let Form { theta, scale, x, y, alpha, ref form } = *form;
     let Transform2D(matrix) = Transform2D(matrix)
         .multiply(transform_2d::translation(x, y))
         .multiply(transform_2d::scale(scale))
         .multiply(transform_2d::rotation(theta));
-    match form {
+    match *form {
 
-        BasicForm::PointPath(line_style, PointPath(points)) => {
+        BasicForm::PointPath(ref line_style, PointPath(ref points)) => {
             // NOTE: join, dashing and dash_offset are not yet handled properly.
-            let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
+            let LineStyle { color, width, cap, join, ref dashing, dash_offset } = *line_style;
             let color = convert_color(color, alpha);
             let mut draw_line = |(x1, y1), (x2, y2)| {
                 if dashing.is_empty() {
@@ -429,11 +430,11 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
             }
         },
 
-        BasicForm::Shape(shape_style, Shape(points)) => {
-            match shape_style {
-                ShapeStyle::Line(line_style) => {
+        BasicForm::Shape(ref shape_style, Shape(ref points)) => {
+            match *shape_style {
+                ShapeStyle::Line(ref line_style) => {
                     // NOTE: join, dashing and dash_offset are not yet handled properly.
-                    let LineStyle { color, width, cap, join, dashing, dash_offset } = line_style;
+                    let LineStyle { color, width, cap, join, ref dashing, dash_offset } = *line_style;
                     let color = convert_color(color, alpha);
                     let mut draw_line = |(x1, y1), (x2, y2)| {
                         let line = match cap {
@@ -451,28 +452,28 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                         draw_line(points[points.len()-1], points[0])
                     }
                 },
-                ShapeStyle::Fill(fill_style) => match fill_style {
+                ShapeStyle::Fill(ref fill_style) => match *fill_style {
                     FillStyle::Solid(color) => {
                         let color = convert_color(color, alpha);
                         let polygon = graphics::Polygon::new(color);
-                        let points: Vec<_> = points.into_iter().map(|(x, y)| [x, y]).collect();
+                        let points: Vec<_> = points.iter().map(|&(x, y)| [x, y]).collect();
                         polygon.draw(&points[..], draw_state, matrix, backend);
                     },
-                    FillStyle::Texture(path) => {
+                    FillStyle::Texture(ref path) => {
                         unimplemented!();
                     },
-                    FillStyle::Grad(gradient) => {
+                    FillStyle::Grad(ref gradient) => {
                         unimplemented!();
                     },
                 },
             }
         },
 
-        BasicForm::OutlinedText(line_style, text) => {
+        BasicForm::OutlinedText(ref line_style, ref text) => {
             unimplemented!();
         },
 
-        BasicForm::Text(text) => {
+        BasicForm::Text(ref text) => {
             let Transform2D(matrix) = Transform2D(matrix).multiply(::transform_2d::scale_y(-1.0));
             if let Some(ref mut character_cache) = *maybe_character_cache {
                 use text::Style as TextStyle;
@@ -500,7 +501,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
             }
         },
 
-        BasicForm::Image(src_x, src_y, (w, h), path) => {
+        BasicForm::Image(src_x, src_y, (w, h), ref path) => {
             // let image = graphics::Image {
             //     color: None,
             //     rectangle: None,
@@ -511,15 +512,15 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
             unimplemented!();
         },
 
-        BasicForm::Group(group_transform, forms) => {
+        BasicForm::Group(ref group_transform, ref forms) => {
             let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
-            for form in forms.into_iter() {
-                draw_form(form, matrix.clone(), backend, maybe_character_cache, draw_state);
+            for form in forms.iter() {
+                draw_form(form, alpha, matrix.clone(), backend, maybe_character_cache, draw_state);
             }
         },
 
-        BasicForm::Element(element) =>
-            element::draw_element(element, matrix, backend, maybe_character_cache, draw_state),
+        BasicForm::Element(ref element) =>
+            element::draw_element(element, alpha, matrix, backend, maybe_character_cache, draw_state),
     }
 }
 
