@@ -18,7 +18,7 @@ use utils::{clampf32, degrees, fmod, min, max, turns};
 
 
 /// Color supporting RGB and HSL variants.
-#[derive(Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
+#[derive(PartialEq, Copy, Clone, Debug, RustcEncodable, RustcDecodable)]
 pub enum Color {
     /// Red, Green, Blue, Alpha - All values' scales represented between 0.0 and 1.0.
     Rgba(f32, f32, f32, f32),
