@@ -506,7 +506,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                 Direction::Left | Direction::Right => {
                     let multi = if let Direction::Right = direction { 1.0 } else { -1.0 };
                     let mut half_prev_width = 0.0;
-                    for element in elements.into_iter() {
+                    for element in elements.iter() {
                         let half_width = element.get_width() as f64 / 2.0;
                         let new_opacity = opacity * props.opacity;
                         draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state);
