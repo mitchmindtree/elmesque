@@ -30,7 +30,7 @@ fn main() {
     let (mut device, mut factory) = gfx_device_gl::create(|s| window.window.get_proc_address(s));
     let mut g2d = Gfx2d::new(&mut device, &mut factory);
     let mut renderer = factory.create_renderer();
-    let Size { width, height } = window.size();
+    let Size { width, height } = window.draw_size();
     let output = factory.make_fake_output(width as u16, height as u16);
     let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
     let mut glyph_cache = GlyphCache::new(&font_path, &mut factory).unwrap();
