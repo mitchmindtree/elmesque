@@ -7,6 +7,7 @@ use std::path::PathBuf;
 #[derive(Clone, Debug)]
 pub struct Text {
     pub sequence: Vec<TextUnit>,
+    pub position: Position,
 }
 
 
@@ -22,6 +23,14 @@ pub enum Line {
     Under,
     Over,
     Through,
+}
+
+/// Text position relative to center point
+#[derive(Copy, Clone, Debug)]
+pub enum Position {
+    Center,
+    ToLeft,
+    ToRight
 }
 
 
@@ -70,7 +79,8 @@ impl Text {
     /// Convert a string into text which can be styled and displayed.
     pub fn from_string(string: String) -> Text {
         Text {
-            sequence: vec![TextUnit { string: string, style: Style::default(), }]
+            sequence: vec![TextUnit { string: string, style: Style::default(), }],
+            position: Position::Center
         }
     }
 
@@ -88,10 +98,12 @@ impl Text {
 
     /// Put many chunks of text together.
     pub fn concat(texts: Vec<Text>) -> Text {
+        let position = texts.get(0).map(|t| t.position).unwrap_or(Position::Center);
         Text {
             sequence: texts.into_iter()
-                .flat_map(|Text { sequence }| sequence.into_iter())
-                .collect()
+                .flat_map(|Text { sequence, position }| sequence.into_iter())
+                .collect(),
+            position: position
         }
     }
 
@@ -114,6 +126,7 @@ impl Text {
         }).collect()).unwrap();
         Text {
             sequence: vec![TextUnit { string: string, style: style }],
+            ..self
         }
     }
 
@@ -183,5 +196,11 @@ impl Text {
         self
     }
 
+    /// Change the text position relative to it's center point
+    #[inline]
+    pub fn position(mut self, position: Position) -> Text {
+        self.position = position;
+        self
+    }
 }
 
