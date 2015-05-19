@@ -399,7 +399,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     matrix: Matrix2d,
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
-    draw_state: &DrawState
+    draw_state: DrawState
 ) {
     let Form { theta, scale, x, y, alpha, ref form } = *form;
     let Transform2D(matrix) = Transform2D(matrix)
@@ -419,7 +419,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                         LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                         LineCap::Padded => unimplemented!(),
                     };
-                    line.draw([x1, y1, x2, y2], draw_state, matrix, backend);
+                    line.draw([x1, y1, x2, y2], &draw_state, matrix, backend);
                 } else {
                     unimplemented!();
                 }
@@ -442,7 +442,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                             LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                             LineCap::Padded => unimplemented!(),
                         };
-                        line.draw([x1, y1, x2, y2], draw_state, matrix, backend);
+                        line.draw([x1, y1, x2, y2], &draw_state, matrix, backend);
                     };
                     for window in points.windows(2) {
                         let (a, b) = (window[0], window[1]);
@@ -457,7 +457,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                         let color = convert_color(color, alpha);
                         let polygon = graphics::Polygon::new(color);
                         let points: Vec<_> = points.iter().map(|&(x, y)| [x, y]).collect();
-                        polygon.draw(&points[..], draw_state, matrix, backend);
+                        polygon.draw(&points[..], &draw_state, matrix, backend);
                     },
                     FillStyle::Texture(ref path) => {
                         unimplemented!();
@@ -496,7 +496,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     let height = height.unwrap_or(16.0).floor();
                     let color = convert_color(color, alpha);
                     graphics::text::Text::colored(color, height as u32)
-                        .draw(&string[..], *character_cache, draw_state, matrix, backend);
+                        .draw(&string[..], *character_cache, &draw_state, matrix, backend);
                 }
             }
         },

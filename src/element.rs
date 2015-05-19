@@ -82,6 +82,7 @@ pub struct Properties {
     pub width: i32,
     pub height: i32,
     pub opacity: f32,
+    pub crop: Option<(f64, f64, f64, f64)>,
     pub color: Option<Color>,
 }
 
@@ -151,6 +152,14 @@ impl Element {
         self
     }
 
+    /// Crops an `Element` with the given rectangle.
+    #[inline]
+    pub fn crop(self, x: f64, y: f64, w: f64, h: f64) -> Element {
+        let Element { props, element } = self;
+        let new_props = Properties { crop: Some((x, y, w, h)), ..props };
+        Element { props: new_props, element: element }
+    }
+
     /// Put an element in a container. This lets you position the element really easily, and there are
     /// tons of ways to set the `Position`.
     #[inline]
@@ -215,7 +224,8 @@ impl Element {
         } = *renderer;
         let context = Context::abs(*width, *height).trans(*width / 2.0, *height / 2.0);
         let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
-        draw_element(self, 1.0, matrix, *backend, maybe_character_cache, &context.draw_state);
+        let Context { draw_state, .. } = context;
+        draw_element(self, 1.0, matrix, *backend, maybe_character_cache, draw_state);
     }
 
     /// Return whether or not a point is over the element.
@@ -242,6 +252,7 @@ pub fn new_element(w: i32, h: i32, element: Prim) -> Element {
             height: h,
             opacity: 1.0,
             color: None,
+            crop: None,
         },
         element: element,
     }
@@ -433,13 +444,18 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     matrix: Matrix2d,
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
-    draw_state: &DrawState
+    draw_state: DrawState,
 ) {
     let Element { ref props, ref element } = *element;
+    let draw_state = match props.crop {
+        Some((x, y, w, h)) => draw_state.scissor(x as u16, y as u16, w as u16, h as u16),
+        None => draw_state,
+    };
+
     match *element {
 
         Prim::Image(style, w, h, ref path) => {
-            let Properties { id, width, height, opacity, color } = *props;
+            let Properties { id, width, height, opacity, color, .. } = *props;
             match style {
                 ImageStyle::Plain => {
                     // let image = graphics::Image {
