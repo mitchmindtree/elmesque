@@ -478,6 +478,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
             let Transform2D(matrix) = Transform2D(matrix).multiply(::transform_2d::scale_y(-1.0));
             if let Some(ref mut character_cache) = *maybe_character_cache {
                 use text::Style as TextStyle;
+                use text::Position as TextPosition;
                 use text::TextUnit;
                 let (total_width, max_height) = text.sequence.iter().fold((0.0, 0.0), |(w, h), unit| {
                     let TextUnit { ref string, ref style } = *unit;
@@ -487,7 +488,11 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     let new_max_height = if height > h { height } else { h };
                     (new_total_width, new_max_height)
                 });
-                let x_offset = -(total_width / 2.0).floor();
+                let x_offset = match text.position {
+                        TextPosition::Center  => -(total_width / 2.0).floor(),
+                        TextPosition::ToLeft  => -total_width.floor(),
+                        TextPosition::ToRight => 0.0
+                    };
                 let y_offset = (max_height / 3.0).floor(); // TODO: FIX THIS (3.0)
                 let Transform2D(matrix) = Transform2D(matrix)
                     .multiply(transform_2d::translation(x_offset, y_offset));
