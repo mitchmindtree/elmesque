@@ -1,67 +1,65 @@
 
 extern crate elmesque;
 extern crate gfx;
-extern crate gfx_device_gl;
 extern crate gfx_graphics;
 extern crate glutin_window;
 extern crate graphics;
 extern crate num;
 extern crate shader_version;
 extern crate piston;
+extern crate piston_window;
 
 use elmesque::{Form, Renderer};
 use gfx::traits::*;
-use gfx_graphics::{Gfx2d, GlyphCache};
-use glutin_window::GlutinWindow;
-use piston::event::{Event, Events};
-use piston::window::{Size, Window, WindowSettings};
+use gfx_graphics::GlyphCache;
+use glutin_window::{GlutinWindow, OpenGL};
+use piston::event::{UpdateEvent, RenderEvent};
+use piston::window::{Size, WindowSettings};
+use piston_window::PistonWindow;
+use std::cell::RefCell;
+use std::rc::Rc;
 
 fn main() {
 
-    let window = GlutinWindow::new(
-        shader_version::opengl::OpenGL::_3_2,
-        WindowSettings::new(
-            "Elmesque".to_string(),
-            Size { width: 1180, height: 580 },
-        )
-        .exit_on_esc(true)
-        .samples(4)
-    );
-    let (mut device, mut factory) = gfx_device_gl::create(|s| window.window.get_proc_address(s));
-    let mut g2d = Gfx2d::new(&mut device, &mut factory);
-    let mut renderer = factory.create_renderer();
-    let Size { width, height } = window.draw_size();
-    let output = factory.make_fake_output(width as u16, height as u16);
+    // Construct the window.
+    let window = {
+        let window = GlutinWindow::new(
+            OpenGL::_3_2,
+            WindowSettings::new("Elmesque".to_string(), Size { width: 1180, height: 580 })
+                .exit_on_esc(true)
+                .samples(4)
+        );
+        PistonWindow::new(Rc::new(RefCell::new(window)), piston_window::empty_app())
+    };
+
+    let mut factory = window.device.borrow().spawn_factory();
     let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
     let mut glyph_cache = GlyphCache::new(&font_path, &mut factory).unwrap();
-    let event_iter = window.events().ups(180).max_fps(60);
     let mut secs = 0.0;
-    for event in event_iter {
-        match event {
-            Event::Render(args) => {
-                g2d.draw(&mut renderer, &output, args.viewport(), |_, graphics| {
-                    let (w, h) = (args.width as f64, args.height as f64);
 
-                    let mut renderer = Renderer::new(w, h, graphics).character_cache(&mut glyph_cache);
+    // Poll events from the window.
+    for event in window {
+        event.draw_2d(|_c, g| {
+            let args = event.render_args().unwrap();
+            let (w, h) = (args.width as f64, args.height as f64);
 
-                    // Construct some freeform graphics aka a `Form`.
-                    let form = elmesque_demo_form(secs);
+            // Construct the elmesque Renderer with our graphics backend and glyph cache.
+            let mut renderer = Renderer::new(w, h, g).character_cache(&mut glyph_cache);
 
-                    // Convert the form to an `Element` for rendering.
-                    elmesque::form::collage(w as i32, h as i32, vec![form])
-                        .clear(elmesque::color::black())
-                        .draw(&mut renderer);
+            // Construct some freeform graphics aka a `Form`.
+            let form = elmesque_demo_form(secs);
 
-
-                });
-                device.submit(renderer.as_buffer());
-                renderer.reset();
-                glyph_cache.update(&mut factory);
-            },
-            Event::Update(args) => secs += args.dt,
-            _ => (),
-        }
+            // Convert the form to an `Element` for rendering.
+            elmesque::form::collage(w as i32, h as i32, vec![form])
+                .clear(elmesque::color::black())
+                .draw(&mut renderer);
+        });
+        event.update(|args| {
+            glyph_cache.update(&mut factory);
+            secs += args.dt
+        });
     }
+
 }
 
 

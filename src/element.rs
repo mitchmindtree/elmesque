@@ -225,7 +225,7 @@ impl Element {
         let context = Context::abs(*width, *height).trans(*width / 2.0, *height / 2.0);
         let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
         let Context { draw_state, .. } = context;
-        draw_element(self, 1.0, matrix, *backend, maybe_character_cache, draw_state);
+        draw_element(self, 1.0, matrix, *backend, maybe_character_cache, draw_state, (*width, *height));
     }
 
     /// Return whether or not a point is over the element.
@@ -445,10 +445,17 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
     draw_state: DrawState,
+    win_dim: (f64, f64),
 ) {
     let Element { ref props, ref element } = *element;
     let draw_state = match props.crop {
-        Some((x, y, w, h)) => draw_state.scissor(x as u16, y as u16, w as u16, h as u16),
+        Some((x, y, w, h)) => {
+            // Transform the crop from Elm's coords to graphics'.
+            let (win_w, win_h) = win_dim;
+            let x = x + win_w / 2.0 - w / 2.0;
+            let y = y + win_h / 2.0 - h / 2.0;
+            draw_state.scissor(x as u16, y as u16, w as u16, h as u16)
+        },
         None => draw_state,
     };
 
@@ -499,7 +506,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                 },
             };
             let new_opacity = opacity * props.opacity;
-            draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state);
+            draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
         }
 
         Prim::Flow(direction, ref elements) => {
@@ -511,7 +518,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     for element in elements.iter() {
                         let half_height = element.get_height() as f64 / 2.0;
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state);
+                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
                         let y_trans = half_height + half_prev_height;
                         let Transform2D(new_matrix) = Transform2D(matrix)
                             .multiply(transform_2d::translation(0.0, y_trans * multi));
@@ -525,7 +532,7 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     for element in elements.iter() {
                         let half_width = element.get_width() as f64 / 2.0;
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state);
+                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
                         let x_trans = half_width + half_prev_width;
                         let Transform2D(new_matrix) = Transform2D(matrix)
                             .multiply(transform_2d::translation(x_trans * multi, 0.0));
@@ -536,13 +543,13 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                 Direction::Out => {
                     for element in elements.iter() {
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state);
+                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
                     }
                 }
                 Direction::In => {
                     for element in elements.iter().rev() {
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state);
+                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
                     }
                 }
             }
@@ -551,13 +558,13 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
         Prim::Collage(w, h, ref forms) => {
             for form in forms.iter() {
                 let new_opacity = opacity * props.opacity;
-                form::draw_form(form, new_opacity, matrix, backend, maybe_character_cache, draw_state);
+                form::draw_form(form, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
             }
         },
 
         Prim::Cleared(color, ref element) => {
             backend.clear_color(color.to_fsa());
-            draw_element(element, opacity, matrix, backend, maybe_character_cache, draw_state);
+            draw_element(element, opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
         },
 
         Prim::Spacer => {},

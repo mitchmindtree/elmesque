@@ -399,7 +399,8 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     matrix: Matrix2d,
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
-    draw_state: DrawState
+    draw_state: DrawState,
+    win_dim: (f64, f64),
 ) {
     let Form { theta, scale, x, y, alpha, ref form } = *form;
     let Transform2D(matrix) = Transform2D(matrix)
@@ -515,12 +516,12 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
         BasicForm::Group(ref group_transform, ref forms) => {
             let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
             for form in forms.iter() {
-                draw_form(form, alpha, matrix.clone(), backend, maybe_character_cache, draw_state);
+                draw_form(form, alpha, matrix.clone(), backend, maybe_character_cache, draw_state, win_dim);
             }
         },
 
         BasicForm::Element(ref element) =>
-            element::draw_element(element, alpha, matrix, backend, maybe_character_cache, draw_state),
+            element::draw_element(element, alpha, matrix, backend, maybe_character_cache, draw_state, win_dim),
     }
 }
 

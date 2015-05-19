@@ -38,6 +38,10 @@ version = "*"
 git = "https://github.com/PistonDevelopers/gfx_graphics.git"
 version = "*"
 
+[dev-dependencies.piston_window]
+git = "https://github.com/PistonDevelopers/piston_window.git"
+version = "*"
+
 
 [dependencies.piston2d-graphics]
 git = "https://github.com/PistonDevelopers/graphics.git"
