@@ -40,10 +40,6 @@ fn main() {
     // Poll events from the window.
     for event in window {
         event.draw_2d(|context, g| {
-            // if let Some(viewport) = context.viewport {
-            //     println!("Viewport - rect: {:?}, draw_size: {:?}, window_size: {:?}",
-            //              viewport.rect, viewport.draw_size, viewport.window_size);
-            // }
             let view_dim = context.get_view_size();
             let (w, h) = (view_dim[0], view_dim[1]);
 
@@ -54,11 +50,9 @@ fn main() {
             let form = elmesque_demo_form(secs);
 
             // Convert the form to an `Element` for rendering.
-            let element = elmesque::form::collage(w as i32, h as i32, vec![form])
-                .clear(elmesque::color::black());
-
-            element.clone().crop(-300.0, 0.0, 150.0, 400.0).draw(&mut renderer);
-            element.clone().crop(300.0, 0.0, 150.0, 400.0).draw(&mut renderer);
+            elmesque::form::collage(w as i32, h as i32, vec![form])
+                .clear(elmesque::color::black())
+                .draw(&mut renderer);
         });
         event.update(|args| {
             glyph_cache.update(&mut factory);
