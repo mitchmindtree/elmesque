@@ -428,19 +428,37 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     // Crop the Element if some crop was given.
     let context = match props.crop {
         Some((x, y, w, h)) => {
-            // Transform the crop from Elm's coords to piston/graphics'.
+            use utils::{clamp, map_range};
             let Context { draw_state, .. } = context;
+
             let view_dim = context.get_view_size();
             let draw_dim = match context.viewport {
                 Some(viewport) => [viewport.draw_size[0] as f64, viewport.draw_size[1] as f64],
                 None => view_dim,
             };
-            let w_scale = view_dim[0] / draw_dim[0];
-            let h_scale = view_dim[1] / draw_dim[1];
-            let x = (x + draw_dim[0] / 2.0 - (w / 2.0) / w_scale) as u16;
-            let y = (y + draw_dim[1] / 2.0 - (h / 2.0) / h_scale) as u16;
-            let w = (w / w_scale) as u16;
-            let h = (h / h_scale) as u16;
+
+            let left = -draw_dim[0] / 2.0;
+            let right = draw_dim[0] / 2.0;
+            let bottom = -draw_dim[1] / 2.0;
+            let top = draw_dim[1] / 2.0;
+
+            let w_scale = 1.0 / (view_dim[0] / draw_dim[0]);
+            let h_scale = 1.0 / (view_dim[1] / draw_dim[1]);
+
+            let w = (w * w_scale) as u16;
+            let h = (h * h_scale) as u16;
+
+            let x = map_range(x - w as f64 / 2.0, left, right, 0, draw_dim[0] as i32);
+            let y = map_range(y - h as f64 / 2.0, bottom, top, 0, draw_dim[1] as i32);
+
+            let x_neg = if x < 0 { x } else { 0 };
+            let y_neg = if y < 0 { y } else { 0 };
+
+            let x = ::std::cmp::max(0, x) as u16;
+            let y = ::std::cmp::max(0, y) as u16;
+            let w = ::std::cmp::max(0, (w as i32 + x_neg)) as u16;
+            let h = ::std::cmp::max(0, (h as i32 + y_neg)) as u16;
+
             Context { draw_state: draw_state.scissor(x, y, w, h), ..context }
         },
         None => context,

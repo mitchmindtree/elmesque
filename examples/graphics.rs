@@ -50,9 +50,11 @@ fn main() {
             let form = elmesque_demo_form(secs);
 
             // Convert the form to an `Element` for rendering.
-            elmesque::form::collage(w as i32, h as i32, vec![form])
-                .clear(elmesque::color::black())
-                .draw(&mut renderer);
+            let a = elmesque::form::collage(w as i32, h as i32, vec![form])
+                //.crop((secs / 2.0).sin() * (w / 2.0), (secs / 3.0).sin() * (h / 2.0), 400.0, 400.0)
+                .clear(elmesque::color::black());
+
+            a.draw(&mut renderer);
         });
         event.update(|args| {
             glyph_cache.update(&mut factory);

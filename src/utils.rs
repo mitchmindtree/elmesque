@@ -46,3 +46,23 @@ pub fn max(a: f32, b: f32) -> f32 {
     if a >= b { a } else { b }
 }
 
+/// Clamp a value to a range.
+#[inline]
+pub fn clamp<T: PartialOrd>(val: T, min: T, max: T) -> T {
+    if val < min { min } else { if val > max { max } else { val } }
+}
+
+/// Map a value from a given range to a new given range.
+pub fn map_range<X: NumCast, Y: NumCast>
+(val: X, in_min: X, in_max: X, out_min: Y, out_max: Y) -> Y {
+    let val_f: f64 = NumCast::from(val).unwrap();
+    let in_min_f: f64 = NumCast::from(in_min).unwrap();
+    let in_max_f: f64 = NumCast::from(in_max).unwrap();
+    let out_min_f: f64 = NumCast::from(out_min).unwrap();
+    let out_max_f: f64 = NumCast::from(out_max).unwrap();
+    NumCast::from(
+        (val_f - in_min_f) / (in_max_f - in_min_f) * (out_max_f - out_min_f) + out_min_f
+    ).unwrap()
+}
+
+
