@@ -32,9 +32,14 @@ fn main() {
         PistonWindow::new(Rc::new(RefCell::new(window)), piston_window::empty_app())
     };
 
-    let mut factory = window.device.borrow().spawn_factory();
-    let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
-    let mut glyph_cache = GlyphCache::new(&font_path, &mut factory).unwrap();
+    // Construct the GlyphCache.
+    let mut glyph_cache = {
+        let mut factory = window.device.borrow().spawn_factory();
+        let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
+        GlyphCache::new(&font_path, factory).unwrap()
+    };
+
+    // We'll use this to animate our graphics.
     let mut secs = 0.0;
 
     // Poll events from the window.
@@ -56,10 +61,7 @@ fn main() {
 
             a.draw(&mut renderer);
         });
-        event.update(|args| {
-            glyph_cache.update(&mut factory);
-            secs += args.dt
-        });
+        event.update(|args| secs += args.dt);
     }
 
 }
