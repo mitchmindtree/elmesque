@@ -35,12 +35,12 @@
 
 use color::{Color, Gradient};
 use element::{self, Element, new_element};
-use graphics::{self, Context, DrawState, Graphics, Transformed};
+use graphics::{self, Context, Graphics, Transformed};
 use graphics::character::CharacterCache;
 use std::f64::consts::PI;
 use std::path::PathBuf;
 use text::Text;
-use transform_2d::{self, Matrix2d, Transform2D};
+use transform_2d::{self, Transform2D};
 
 
 /// A general, freeform 2D graphics structure.

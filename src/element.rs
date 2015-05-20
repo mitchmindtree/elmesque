@@ -55,10 +55,10 @@
 use color::Color;
 use form::{self, Form};
 use graphics::character::CharacterCache;
-use graphics::{Context, DrawState, Graphics, Transformed};
+use graphics::{Context, Graphics, Transformed};
 use self::Three::{P, Z, N};
 use std::path::PathBuf;
-use transform_2d::{self, Matrix2d, Transform2D};
+use transform_2d;
 
 
 /// An Element's Properties.
@@ -199,7 +199,6 @@ impl Element {
             C: CharacterCache,
             G: Graphics<Texture=C::Texture>,
     {
-        use transform_2d::scale_y;
         let Renderer {
             context,
             ref mut backend,
