@@ -55,30 +55,15 @@
 use color::Color;
 use form::{self, Form};
 use graphics::character::CharacterCache;
-use graphics::{DrawState, Graphics};
+use graphics::{Context, DrawState, Graphics, Transformed};
 use self::Three::{P, Z, N};
 use std::path::PathBuf;
 use transform_2d::{self, Matrix2d, Transform2D};
 
 
-/// The global graphics unique identifier counter.
-pub type Guid = u64;
-pub static mut GUID: Guid = 0;
-
-
-/// Increment the GUID and return the new GUID.
-fn guid() -> Guid {
-    unsafe {
-        GUID += 1;
-        GUID
-    }
-}
-
-
 /// An Element's Properties.
 #[derive(Clone, Debug)]
 pub struct Properties {
-    pub id: Guid,
     pub width: i32,
     pub height: i32,
     pub opacity: f32,
@@ -214,18 +199,15 @@ impl Element {
             C: CharacterCache,
             G: Graphics<Texture=C::Texture>,
     {
-        use graphics::{Context, Transformed};
         use transform_2d::scale_y;
         let Renderer {
-            ref width,
-            ref height,
+            context,
             ref mut backend,
             ref mut maybe_character_cache,
         } = *renderer;
-        let context = Context::abs(*width, *height).trans(*width / 2.0, *height / 2.0);
-        let Transform2D(matrix) = Transform2D(context.transform).multiply(scale_y(-1.0));
-        let Context { draw_state, .. } = context;
-        draw_element(self, 1.0, matrix, *backend, maybe_character_cache, draw_state, (*width, *height));
+        let view_size = context.get_view_size();
+        let context = context.trans(view_size[0] / 2.0, view_size[1] / 2.0).scale(1.0, -1.0);
+        draw_element(self, 1.0, *backend, maybe_character_cache, context);
     }
 
     /// Return whether or not a point is over the element.
@@ -247,7 +229,6 @@ pub fn size_of(e: &Element) -> (i32, i32) {
 pub fn new_element(w: i32, h: i32, element: Prim) -> Element {
     Element {
         props: Properties {
-            id: guid(),
             width: w,
             height: h,
             opacity: 1.0,
@@ -410,8 +391,7 @@ pub fn outward() -> Direction { Direction::Out }
 
 /// Used for rendering elmesque `Element`s.
 pub struct Renderer<'a, C: 'a, G: 'a> {
-    width: f64,
-    height: f64,
+    context: Context,
     backend: &'a mut G,
     maybe_character_cache: Option<&'a mut C>,
 }
@@ -419,10 +399,9 @@ pub struct Renderer<'a, C: 'a, G: 'a> {
 impl<'a, C, G> Renderer<'a, C, G> {
 
     /// Construct a renderer, used for rendering elmesque `Element`s.
-    pub fn new(width: f64, height: f64, backend: &'a mut G) -> Renderer<'a, C, G> {
+    pub fn new(context: Context, backend: &'a mut G) -> Renderer<'a, C, G> {
         Renderer {
-            width: width,
-            height: height,
+            context: context,
             backend: backend,
             maybe_character_cache: None,
         }
@@ -441,28 +420,37 @@ impl<'a, C, G> Renderer<'a, C, G> {
 pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     element: &Element,
     opacity: f32,
-    matrix: Matrix2d,
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
-    draw_state: DrawState,
-    win_dim: (f64, f64),
+    context: Context,
 ) {
     let Element { ref props, ref element } = *element;
-    let draw_state = match props.crop {
+
+    // Crop the Element if some crop was given.
+    let context = match props.crop {
         Some((x, y, w, h)) => {
-            // Transform the crop from Elm's coords to graphics'.
-            let (win_w, win_h) = win_dim;
-            let x = x + win_w / 2.0 - w / 2.0;
-            let y = y + win_h / 2.0 - h / 2.0;
-            draw_state.scissor(x as u16, y as u16, w as u16, h as u16)
+            // Transform the crop from Elm's coords to piston/graphics'.
+            let Context { draw_state, .. } = context;
+            let view_dim = context.get_view_size();
+            let draw_dim = match context.viewport {
+                Some(viewport) => [viewport.draw_size[0] as f64, viewport.draw_size[1] as f64],
+                None => view_dim,
+            };
+            let w_scale = view_dim[0] / draw_dim[0];
+            let h_scale = view_dim[1] / draw_dim[1];
+            let x = (x + draw_dim[0] / 2.0 - (w / 2.0) / w_scale) as u16;
+            let y = (y + draw_dim[1] / 2.0 - (h / 2.0) / h_scale) as u16;
+            let w = (w / w_scale) as u16;
+            let h = (h / h_scale) as u16;
+            Context { draw_state: draw_state.scissor(x, y, w, h), ..context }
         },
-        None => draw_state,
+        None => context,
     };
 
     match *element {
 
         Prim::Image(style, w, h, ref path) => {
-            let Properties { id, width, height, opacity, color, .. } = *props;
+            let Properties { width, height, opacity, color, .. } = *props;
             match style {
                 ImageStyle::Plain => {
                     // let image = graphics::Image {
@@ -489,28 +477,27 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
 
         Prim::Container(position, ref element) => {
             let Position { horizontal, vertical, x, y } = position;
-            let Transform2D(matrix) = match (x, y) {
-                (Pos::Relative(x), Pos::Relative(y)) => {
-                    Transform2D(matrix).multiply(transform_2d::translation(x as f64, y as f64))
-                },
-                (Pos::Absolute(x), Pos::Relative(y)) => {
-                    transform_2d::matrix(1.0, 0.0, 0.0, 1.0, x as f64, 0.0)
-                        .multiply(transform_2d::translation(0.0, y as f64))
-                },
-                (Pos::Relative(x), Pos::Absolute(y)) => {
-                    transform_2d::matrix(1.0, 0.0, 0.0, 1.0, 0.0, y as f64)
-                        .multiply(transform_2d::translation(x as f64, 0.0))
-                },
-                (Pos::Absolute(x), Pos::Absolute(y)) => {
-                    transform_2d::matrix(1.0, 0.0, 0.0, 1.0, x as f64, y as f64)
+            let context = match (x, y) {
+                (Pos::Relative(x), Pos::Relative(y)) => context.trans(x as f64, y as f64),
+                (Pos::Absolute(x), Pos::Relative(y)) => Context {
+                    transform: transform_2d::matrix(1.0, 0.0, 0.0, 1.0, x as f64, 0.0).0,
+                    ..context
+                }.trans(0.0, y as f64),
+                (Pos::Relative(x), Pos::Absolute(y)) => Context {
+                    transform: transform_2d::matrix(1.0, 0.0, 0.0, 1.0, 0.0, y as f64).0,
+                    ..context
+                }.trans(x as f64, 0.0),
+                (Pos::Absolute(x), Pos::Absolute(y)) => Context {
+                    transform: transform_2d::matrix(1.0, 0.0, 0.0, 1.0, x as f64, y as f64).0,
+                    ..context
                 },
             };
             let new_opacity = opacity * props.opacity;
-            draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+            draw_element(element, new_opacity, backend, maybe_character_cache, context);
         }
 
         Prim::Flow(direction, ref elements) => {
-            let mut matrix = matrix;
+            let mut context = context;
             match direction {
                 Direction::Up | Direction::Down => {
                     let multi = if let Direction::Up = direction { 1.0 } else { -1.0 };
@@ -518,11 +505,9 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     for element in elements.iter() {
                         let half_height = element.get_height() as f64 / 2.0;
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+                        draw_element(element, new_opacity, backend, maybe_character_cache, context);
                         let y_trans = half_height + half_prev_height;
-                        let Transform2D(new_matrix) = Transform2D(matrix)
-                            .multiply(transform_2d::translation(0.0, y_trans * multi));
-                        matrix = new_matrix;
+                        context = context.trans(0.0, y_trans * multi);
                         half_prev_height = half_height;
                     }
                 },
@@ -532,24 +517,22 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     for element in elements.iter() {
                         let half_width = element.get_width() as f64 / 2.0;
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+                        draw_element(element, new_opacity, backend, maybe_character_cache, context);
                         let x_trans = half_width + half_prev_width;
-                        let Transform2D(new_matrix) = Transform2D(matrix)
-                            .multiply(transform_2d::translation(x_trans * multi, 0.0));
-                        matrix = new_matrix;
+                        context = context.trans(x_trans * multi, 0.0);
                         half_prev_width = half_width;
                     }
                 },
                 Direction::Out => {
                     for element in elements.iter() {
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+                        draw_element(element, new_opacity, backend, maybe_character_cache, context);
                     }
                 }
                 Direction::In => {
                     for element in elements.iter().rev() {
                         let new_opacity = opacity * props.opacity;
-                        draw_element(element, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+                        draw_element(element, new_opacity, backend, maybe_character_cache, context);
                     }
                 }
             }
@@ -558,13 +541,13 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
         Prim::Collage(w, h, ref forms) => {
             for form in forms.iter() {
                 let new_opacity = opacity * props.opacity;
-                form::draw_form(form, new_opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+                form::draw_form(form, new_opacity, backend, maybe_character_cache, context);
             }
         },
 
         Prim::Cleared(color, ref element) => {
             backend.clear_color(color.to_fsa());
-            draw_element(element, opacity, matrix, backend, maybe_character_cache, draw_state, win_dim);
+            draw_element(element, opacity, backend, maybe_character_cache, context);
         },
 
         Prim::Spacer => {},

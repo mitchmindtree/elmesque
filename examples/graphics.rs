@@ -13,7 +13,7 @@ use elmesque::{Form, Renderer};
 use gfx::traits::*;
 use gfx_graphics::GlyphCache;
 use glutin_window::{GlutinWindow, OpenGL};
-use piston::event::{UpdateEvent, RenderEvent};
+use piston::event::UpdateEvent;
 use piston::window::{Size, WindowSettings};
 use piston_window::PistonWindow;
 use std::cell::RefCell;
@@ -39,20 +39,26 @@ fn main() {
 
     // Poll events from the window.
     for event in window {
-        event.draw_2d(|_c, g| {
-            let args = event.render_args().unwrap();
-            let (w, h) = (args.width as f64, args.height as f64);
+        event.draw_2d(|context, g| {
+            // if let Some(viewport) = context.viewport {
+            //     println!("Viewport - rect: {:?}, draw_size: {:?}, window_size: {:?}",
+            //              viewport.rect, viewport.draw_size, viewport.window_size);
+            // }
+            let view_dim = context.get_view_size();
+            let (w, h) = (view_dim[0], view_dim[1]);
 
             // Construct the elmesque Renderer with our graphics backend and glyph cache.
-            let mut renderer = Renderer::new(w, h, g).character_cache(&mut glyph_cache);
+            let mut renderer = Renderer::new(context, g).character_cache(&mut glyph_cache);
 
             // Construct some freeform graphics aka a `Form`.
             let form = elmesque_demo_form(secs);
 
             // Convert the form to an `Element` for rendering.
-            elmesque::form::collage(w as i32, h as i32, vec![form])
-                .clear(elmesque::color::black())
-                .draw(&mut renderer);
+            let element = elmesque::form::collage(w as i32, h as i32, vec![form])
+                .clear(elmesque::color::black());
+
+            element.clone().crop(-300.0, 0.0, 150.0, 400.0).draw(&mut renderer);
+            element.clone().crop(300.0, 0.0, 150.0, 400.0).draw(&mut renderer);
         });
         event.update(|args| {
             glyph_cache.update(&mut factory);

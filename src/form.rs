@@ -35,7 +35,7 @@
 
 use color::{Color, Gradient};
 use element::{self, Element, new_element};
-use graphics::{self, DrawState, Graphics};
+use graphics::{self, Context, DrawState, Graphics, Transformed};
 use graphics::character::CharacterCache;
 use std::f64::consts::PI;
 use std::path::PathBuf;
@@ -396,17 +396,12 @@ pub fn text(t: Text) -> Form {
 pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     form: &Form,
     alpha: f32,
-    matrix: Matrix2d,
     backend: &mut G,
     maybe_character_cache: &mut Option<&mut C>,
-    draw_state: DrawState,
-    win_dim: (f64, f64),
+    context: Context,
 ) {
     let Form { theta, scale, x, y, alpha, ref form } = *form;
-    let Transform2D(matrix) = Transform2D(matrix)
-        .multiply(transform_2d::translation(x, y))
-        .multiply(transform_2d::scale(scale))
-        .multiply(transform_2d::rotation(theta));
+    let context = context.trans(x, y).scale(scale, scale).rot_rad(theta);
     match *form {
 
         BasicForm::PointPath(ref line_style, PointPath(ref points)) => {
@@ -420,7 +415,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                         LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                         LineCap::Padded => unimplemented!(),
                     };
-                    line.draw([x1, y1, x2, y2], &draw_state, matrix, backend);
+                    line.draw([x1, y1, x2, y2], &context.draw_state, context.transform, backend);
                 } else {
                     unimplemented!();
                 }
@@ -443,7 +438,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                             LineCap::Round => graphics::Line::new_round(color, width / 2.0),
                             LineCap::Padded => unimplemented!(),
                         };
-                        line.draw([x1, y1, x2, y2], &draw_state, matrix, backend);
+                        line.draw([x1, y1, x2, y2], &context.draw_state, context.transform, backend);
                     };
                     for window in points.windows(2) {
                         let (a, b) = (window[0], window[1]);
@@ -458,7 +453,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                         let color = convert_color(color, alpha);
                         let polygon = graphics::Polygon::new(color);
                         let points: Vec<_> = points.iter().map(|&(x, y)| [x, y]).collect();
-                        polygon.draw(&points[..], &draw_state, matrix, backend);
+                        polygon.draw(&points[..], &context.draw_state, context.transform, backend);
                     },
                     FillStyle::Texture(ref path) => {
                         unimplemented!();
@@ -475,7 +470,7 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
         },
 
         BasicForm::Text(ref text) => {
-            let Transform2D(matrix) = Transform2D(matrix).multiply(::transform_2d::scale_y(-1.0));
+            let context = context.scale(1.0, -1.0);
             if let Some(ref mut character_cache) = *maybe_character_cache {
                 use text::Style as TextStyle;
                 use text::Position as TextPosition;
@@ -494,15 +489,14 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                         TextPosition::ToRight => 0.0
                     };
                 let y_offset = (max_height / 3.0).floor(); // TODO: FIX THIS (3.0)
-                let Transform2D(matrix) = Transform2D(matrix)
-                    .multiply(transform_2d::translation(x_offset, y_offset));
+                let context = context.trans(x_offset, y_offset);
                 for unit in text.sequence.iter() {
                     let TextUnit { ref string, ref style } = *unit;
                     let TextStyle { ref typeface, height, color, bold, italic, line, monospace } = *style;
                     let height = height.unwrap_or(16.0).floor();
                     let color = convert_color(color, alpha);
                     graphics::text::Text::colored(color, height as u32)
-                        .draw(&string[..], *character_cache, &draw_state, matrix, backend);
+                        .draw(&string[..], *character_cache, &context.draw_state, context.transform, backend);
                 }
             }
         },
@@ -519,14 +513,16 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
         },
 
         BasicForm::Group(ref group_transform, ref forms) => {
-            let Transform2D(matrix) = Transform2D(matrix.clone()).multiply(group_transform.clone());
+            let Transform2D(matrix) = Transform2D(context.transform.clone())
+                .multiply(group_transform.clone());
+            let context = Context { transform: matrix, ..context };
             for form in forms.iter() {
-                draw_form(form, alpha, matrix.clone(), backend, maybe_character_cache, draw_state, win_dim);
+                draw_form(form, alpha, backend, maybe_character_cache, context);
             }
         },
 
         BasicForm::Element(ref element) =>
-            element::draw_element(element, alpha, matrix, backend, maybe_character_cache, draw_state, win_dim),
+            element::draw_element(element, alpha, backend, maybe_character_cache, context),
     }
 }
 
