@@ -1,69 +1,67 @@
-
 extern crate elmesque;
-extern crate gfx;
-extern crate gfx_graphics;
 extern crate glutin_window;
+extern crate glium_graphics;
 extern crate graphics;
 extern crate num;
 extern crate shader_version;
 extern crate piston;
-extern crate piston_window;
 
 use elmesque::{Form, Renderer};
-use gfx::traits::*;
-use gfx_graphics::GlyphCache;
+use graphics::context::Context;
+use glium_graphics::{GliumWindow, GlyphCache, Glium2d, GliumGraphics};
 use glutin_window::{GlutinWindow, OpenGL};
-use piston::event::UpdateEvent;
+use piston::event::{UpdateEvent, Events, RenderEvent};
 use piston::window::{Size, WindowSettings};
-use piston_window::PistonWindow;
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::path::Path;
+
 
 fn main() {
-
+    const GLVERSION: OpenGL = OpenGL::_3_2;
     // Construct the window.
-    let window = {
-        let window = GlutinWindow::new(
-            OpenGL::_3_2,
-            WindowSettings::new("Elmesque".to_string(), Size { width: 1180, height: 580 })
-                .exit_on_esc(true)
-                .samples(4)
-        );
-        PistonWindow::new(Rc::new(RefCell::new(window)), piston_window::empty_app())
-    };
+    let window = Rc::new(RefCell::new(GlutinWindow::new(
+        GLVERSION,
+        WindowSettings::new("Elmesque".to_string(), Size { width: 1180, height: 580 })
+            .exit_on_esc(true)
+            .samples(4)
+    )));
 
     // Construct the GlyphCache.
-    let mut glyph_cache = {
-        let mut factory = window.device.borrow().spawn_factory();
-        let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
-        GlyphCache::new(&font_path, factory).unwrap()
-    };
+    let glium_window = GliumWindow::new(&window).unwrap();
+    let mut g2d = Glium2d::new(GLVERSION, &glium_window);
+    let mut glyph_cache = GlyphCache::new(
+        Path::new("assets/NotoSans/NotoSans-Regular.ttf"),
+        glium_window.clone()
+    ).unwrap();
 
     // We'll use this to animate our graphics.
     let mut secs = 0.0;
 
     // Poll events from the window.
-    for event in window {
-        event.draw_2d(|context, g| {
-            let view_dim = context.get_view_size();
-            let (w, h) = (view_dim[0], view_dim[1]);
+    for event in window.events() {
+        event.render(|args| {
+            let mut target = glium_window.draw();
+            {
+                // Construct the elmesque Renderer with our graphics backend and glyph cache.
+                let mut backend = GliumGraphics::new(&mut g2d, &mut target);
+                let ctx = Context::abs(args.width as f64, args.height as f64);
+                let mut renderer = Renderer::new(ctx, &mut backend)
+                    .character_cache(&mut glyph_cache);
 
-            // Construct the elmesque Renderer with our graphics backend and glyph cache.
-            let mut renderer = Renderer::new(context, g).character_cache(&mut glyph_cache);
+                // Construct some freeform graphics aka a `Form`.
+                let form = elmesque_demo_form(secs);
 
-            // Construct some freeform graphics aka a `Form`.
-            let form = elmesque_demo_form(secs);
-
-            // Convert the form to an `Element` for rendering.
-            let a = elmesque::form::collage(w as i32, h as i32, vec![form])
-                //.crop((secs / 2.0).sin() * (w / 2.0), (secs / 3.0).sin() * (h / 2.0), 400.0, 400.0)
-                .clear(elmesque::color::black());
-
-            a.draw(&mut renderer);
+                // Convert the form to an `Element` for rendering.
+                elmesque::form::collage(args.width as i32, args.height as i32, vec![form])
+                    //.crop((secs / 2.0).sin() * (w / 2.0), (secs / 3.0).sin() * (h / 2.0), 400.0, 400.0)
+                    .clear(elmesque::color::black())
+                    .draw(&mut renderer);
+            }
+            target.finish();
         });
         event.update(|args| secs += args.dt);
     }
-
 }
 
 
