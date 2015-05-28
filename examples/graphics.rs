@@ -34,9 +34,8 @@ fn main() {
 
     // Construct the GlyphCache.
     let mut glyph_cache = {
-        let mut factory = window.device.borrow().spawn_factory();
         let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
-        GlyphCache::new(&font_path, factory).unwrap()
+        GlyphCache::new(&font_path, window.factory.borrow().clone()).unwrap()
     };
 
     // We'll use this to animate our graphics.
