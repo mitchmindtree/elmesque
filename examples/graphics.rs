@@ -1,5 +1,6 @@
 
 extern crate elmesque;
+extern crate find_folder;
 extern crate gfx;
 extern crate gfx_graphics;
 extern crate glutin_window;
@@ -34,7 +35,8 @@ fn main() {
 
     // Construct the GlyphCache.
     let mut glyph_cache = {
-        let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
+        let assets = find_folder::Search::Both(3, 3).for_folder("assets").unwrap();
+        let font_path = assets.join("NotoSans/NotoSans-Regular.ttf");
         GlyphCache::new(&font_path, window.factory.borrow().clone()).unwrap()
     };
 
