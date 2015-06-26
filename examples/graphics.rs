@@ -13,25 +13,18 @@ extern crate piston_window;
 use elmesque::{Form, Renderer};
 use gfx::traits::*;
 use gfx_graphics::GlyphCache;
-use glutin_window::{GlutinWindow, OpenGL};
 use piston::event::UpdateEvent;
-use piston::window::{Size, WindowSettings};
+use piston::window::WindowSettings;
 use piston_window::PistonWindow;
-use std::cell::RefCell;
-use std::rc::Rc;
 
 fn main() {
 
     // Construct the window.
-    let window = {
-        let window = GlutinWindow::new(
-            OpenGL::_3_2,
-            WindowSettings::new("Elmesque".to_string(), Size { width: 1180, height: 580 })
-                .exit_on_esc(true)
-                .samples(4)
-        );
-        PistonWindow::new(Rc::new(RefCell::new(window)), piston_window::empty_app())
-    };
+    let window: PistonWindow =
+        WindowSettings::new("Elmesque", [1180, 580])
+            .exit_on_esc(true)
+            .samples(4)
+            .into();
 
     // Construct the GlyphCache.
     let mut glyph_cache = {
