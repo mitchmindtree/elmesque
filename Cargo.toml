@@ -18,13 +18,8 @@ rustc-serialize = "*"
 vecmath = "0.1.1"
 
 [dev-dependencies]
-find_folder = "0.1.1"
-gfx = "0.6.*"
-gfx_device_gl = "0.4.*"
 piston = "0.2.2"
-piston-gfx_texture = "0.2.0"
-piston_window = "0.6.2"
+piston2d-opengl_graphics = "0.3.0"
 piston2d-gfx_graphics = "0.3.1"
 pistoncore-glutin_window= "0.3.0"
-shader_version = "0.1.0"
 
