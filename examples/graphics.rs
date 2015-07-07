@@ -1,61 +1,59 @@
-
 extern crate elmesque;
-extern crate find_folder;
-extern crate gfx;
-extern crate gfx_graphics;
-extern crate glutin_window;
-extern crate graphics;
-extern crate num;
-extern crate shader_version;
 extern crate piston;
-extern crate piston_window;
+extern crate glutin_window;
+extern crate opengl_graphics;
+extern crate num;
 
 use elmesque::{Form, Renderer};
-use gfx::traits::*;
-use gfx_graphics::GlyphCache;
-use piston::event::UpdateEvent;
+use opengl_graphics::glyph_cache::GlyphCache;
+use piston::event::{UpdateEvent, Events, EventLoop, RenderEvent};
 use piston::window::WindowSettings;
-use piston_window::PistonWindow;
+use glutin_window::GlutinWindow as Window;
+use opengl_graphics::{ GlGraphics, OpenGL };
 
 fn main() {
 
     // Construct the window.
-    let window: PistonWindow =
+    let window: Window =
         WindowSettings::new("Elmesque", [1180, 580])
             .exit_on_esc(true)
+            .vsync(true)
             .samples(4)
             .into();
 
+    let mut gl = GlGraphics::new(OpenGL::_3_2);
+
     // Construct the GlyphCache.
     let mut glyph_cache = {
-        let assets = find_folder::Search::Both(3, 3).for_folder("assets").unwrap();
-        let font_path = assets.join("NotoSans/NotoSans-Regular.ttf");
-        GlyphCache::new(&font_path, window.factory.borrow().clone()).unwrap()
+        GlyphCache::from_bytes(include_bytes!("../assets/NotoSans/NotoSans-Regular.ttf")).unwrap()
     };
 
     // We'll use this to animate our graphics.
     let mut secs = 0.0;
 
     // Poll events from the window.
-    for event in window {
-        event.draw_2d(|context, g| {
-            let view_dim = context.get_view_size();
-            let (w, h) = (view_dim[0], view_dim[1]);
+    for event in window.events().max_fps(60).ups(60) {
+        if let Some(r) = event.render_args() {
+            gl.draw(r.viewport(), |context, g| {
+                let view_dim = context.get_view_size();
+                let (w, h) = (view_dim[0], view_dim[1]);
 
-            // Construct the elmesque Renderer with our graphics backend and glyph cache.
-            let mut renderer = Renderer::new(context, g).character_cache(&mut glyph_cache);
+                // Construct the elmesque Renderer with our graphics backend and glyph cache.
+                let mut renderer = Renderer::new(context, g).character_cache(&mut glyph_cache);
 
-            // Construct some freeform graphics aka a `Form`.
-            let form = elmesque_demo_form(secs);
+                // Construct some freeform graphics aka a `Form`.
+                let form = elmesque_demo_form(secs);
 
-            // Convert the form to an `Element` for rendering.
-            let a = elmesque::form::collage(w as i32, h as i32, vec![form])
-                //.crop((secs / 2.0).sin() * (w / 2.0), (secs / 3.0).sin() * (h / 2.0), 400.0, 400.0)
-                .clear(elmesque::color::black());
+                // Convert the form to an `Element` for rendering.
+                let a = elmesque::form::collage(w as i32, h as i32, vec![form])
+                    .clear(elmesque::color::black());
 
-            a.draw(&mut renderer);
-        });
-        event.update(|args| secs += args.dt);
+                a.draw(&mut renderer);
+            });
+        }
+        if let Some(u) = event.update_args() {
+            secs += u.dt
+        }
     }
 
 }
@@ -140,4 +138,3 @@ pub fn elmesque_demo_form(secs: f64) -> Form {
       .scale((secs * 0.05).cos() * 0.2 + 0.9)
 
 }
-
