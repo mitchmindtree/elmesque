@@ -1,7 +1,6 @@
 extern crate elmesque;
 extern crate find_folder;
 extern crate gfx_graphics;
-extern crate glutin_window;
 extern crate graphics;
 extern crate num;
 extern crate piston;
