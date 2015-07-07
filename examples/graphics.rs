@@ -1,17 +1,13 @@
-
 extern crate elmesque;
 extern crate find_folder;
-extern crate gfx;
 extern crate gfx_graphics;
 extern crate glutin_window;
 extern crate graphics;
 extern crate num;
-extern crate shader_version;
 extern crate piston;
 extern crate piston_window;
 
 use elmesque::{Form, Renderer};
-use gfx::traits::*;
 use gfx_graphics::GlyphCache;
 use piston::event::UpdateEvent;
 use piston::window::WindowSettings;
@@ -24,6 +20,7 @@ fn main() {
         WindowSettings::new("Elmesque", [1180, 580])
             .exit_on_esc(true)
             .samples(4)
+            .vsync(true)
             .into();
 
     // Construct the GlyphCache.
