@@ -6,7 +6,7 @@ extern crate piston;
 extern crate piston_window;
 
 use elmesque::{Form, Renderer};
-use piston::event::UpdateEvent;
+use piston::input::UpdateEvent;
 use piston::window::WindowSettings;
 use piston_window::{PistonWindow, Glyphs};
 
@@ -18,7 +18,8 @@ fn main() {
             .exit_on_esc(true)
             .samples(4)
             .vsync(true)
-            .into();
+            .build()
+            .unwrap();
 
     // Construct the GlyphCache.
     let mut glyph_cache = {
