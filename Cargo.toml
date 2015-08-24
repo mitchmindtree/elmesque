@@ -1,6 +1,6 @@
 [package]
 name = "elmesque"
-version = "0.4.0"
+version = "0.5.0"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 description = "An attempt at porting Elm's incredibly useful, purely functional std graphics modules."
 readme = "README.md"
@@ -12,7 +12,7 @@ homepage = "https://github.com/mitchmindtree/elmesque"
 
 [dependencies]
 num = "*"
-piston2d-graphics = "0.5.0"
+piston2d-graphics = "0.6.0"
 rand = "*"
 rustc-serialize = "*"
 vecmath = "0.1.1"
