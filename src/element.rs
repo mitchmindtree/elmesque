@@ -426,34 +426,54 @@ pub fn draw_element<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
     let Element { ref props, ref element } = *element;
 
     // Crop the Element if some crop was given.
+    // We'll use the `DrawState::scissor` method for this.
+    //
+    // Because `DrawState` uses top-left origin coords, we'll have to convert from our
+    // centered-origin coordinate system.
+    //
+    // We'll also need to stretch our coords to match the correct viewport.draw_size.
     let context = match props.crop {
         Some((x, y, w, h)) => {
             use utils::{clamp, map_range};
             let Context { draw_state, .. } = context;
 
+            // Our view_dim is our virtual window size which is consistent no matter the display.
             let view_dim = context.get_view_size();
+
+            // Our draw_dim is the actual window size in pixels. Our target crop area must be
+            // represented in this size.
             let draw_dim = match context.viewport {
                 Some(viewport) => [viewport.draw_size[0] as f64, viewport.draw_size[1] as f64],
                 None => view_dim,
             };
 
-            let left = -draw_dim[0] / 2.0;
-            let right = draw_dim[0] / 2.0;
-            let bottom = -draw_dim[1] / 2.0;
-            let top = draw_dim[1] / 2.0;
+            // Calculate the distance to the edges of the window from the center.
+            let left = -view_dim[0] / 2.0;
+            let right = view_dim[0] / 2.0;
+            let bottom = -view_dim[1] / 2.0;
+            let top = view_dim[1] / 2.0;
 
-            let w_scale = 1.0 / (view_dim[0] / draw_dim[0]);
-            let h_scale = 1.0 / (view_dim[1] / draw_dim[1]);
+            // We start with the x and y in the center of our crop area, however we need it to be
+            // at the top left of the crop area.
+            let left_x = x - w as f64 / 2.0;
+            let top_y = y - h as f64 / 2.0;
 
-            let w = (w * w_scale) as u16;
-            let h = (h * h_scale) as u16;
+            // Map the position at the top left of the crop area in view_dim to our draw_dim.
+            let x = map_range(left_x, left, right, 0, draw_dim[0] as i32);
+            let y = map_range(top_y, bottom, top, 0, draw_dim[1] as i32);
+ 
+            // Convert the w and h from our view_dim to the draw_dim.
+            let w_scale = draw_dim[0] / view_dim[0];
+            let h_scale = draw_dim[1] / view_dim[1];
+            let w = w * w_scale;
+            let h = h * h_scale;
 
-            let x = map_range(x - w as f64 / 2.0, left, right, 0, draw_dim[0] as i32);
-            let y = map_range(y - h as f64 / 2.0, bottom, top, 0, draw_dim[1] as i32);
-
+            // If we ended up with negative coords for the crop area, we'll use 0 instead as we
+            // can't represent the negative coords with `u16` (the target DrawState dimension type).
+            // We'll hold onto the lost negative values (x_neg and y_neg) so that we can compensate
+            // with the width and height.
             let x_neg = if x < 0 { x } else { 0 };
             let y_neg = if y < 0 { y } else { 0 };
-
             let x = ::std::cmp::max(0, x) as u16;
             let y = ::std::cmp::max(0, y) as u16;
             let w = ::std::cmp::max(0, (w as i32 + x_neg)) as u16;
