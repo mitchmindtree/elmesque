@@ -1,41 +1,31 @@
-
 extern crate elmesque;
-extern crate gfx;
-extern crate gfx_graphics;
-extern crate glutin_window;
+extern crate find_folder;
 extern crate graphics;
 extern crate num;
-extern crate shader_version;
 extern crate piston;
 extern crate piston_window;
 
 use elmesque::{Form, Renderer};
-use gfx::traits::*;
-use gfx_graphics::GlyphCache;
-use glutin_window::{GlutinWindow, OpenGL};
-use piston::event::UpdateEvent;
-use piston::window::{Size, WindowSettings};
-use piston_window::PistonWindow;
-use std::cell::RefCell;
-use std::rc::Rc;
+use piston::input::UpdateEvent;
+use piston::window::WindowSettings;
+use piston_window::{PistonWindow, Glyphs};
 
 fn main() {
 
     // Construct the window.
-    let window = {
-        let window = GlutinWindow::new(
-            OpenGL::_3_2,
-            WindowSettings::new("Elmesque".to_string(), Size { width: 1180, height: 580 })
-                .exit_on_esc(true)
-                .samples(4)
-        );
-        PistonWindow::new(Rc::new(RefCell::new(window)), piston_window::empty_app())
-    };
+    let window: PistonWindow =
+        WindowSettings::new("Elmesque", [1180, 580])
+            .exit_on_esc(true)
+            .samples(4)
+            .vsync(true)
+            .build()
+            .unwrap();
 
     // Construct the GlyphCache.
     let mut glyph_cache = {
-        let font_path = ::std::path::Path::new("./assets/NotoSans/NotoSans-Regular.ttf");
-        GlyphCache::new(&font_path, window.factory.borrow().clone()).unwrap()
+        let assets = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").unwrap();
+        let font_path = assets.join("NotoSans/NotoSans-Regular.ttf");
+        Glyphs::new(&font_path, window.factory.borrow().clone()).unwrap()
     };
 
     // We'll use this to animate our graphics.

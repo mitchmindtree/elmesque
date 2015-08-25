@@ -18,9 +18,8 @@ Usage
 
 Add elmesque to your cargo dependencies like so.
 
-```
-[dependencies.elmesque]
-git = "https://github.com/mitchmindtree/elmesque.git"
-version = "*"
+```toml
+[dependencies]
+elmesque = "*"
 ```
 
