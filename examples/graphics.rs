@@ -23,7 +23,7 @@ fn main() {
 
     // Construct the GlyphCache.
     let mut glyph_cache = {
-        let assets = find_folder::Search::Both(3, 3).for_folder("assets").unwrap();
+        let assets = find_folder::Search::ParentsThenKids(3, 3).for_folder("assets").unwrap();
         let font_path = assets.join("NotoSans/NotoSans-Regular.ttf");
         Glyphs::new(&font_path, window.factory.borrow().clone()).unwrap()
     };

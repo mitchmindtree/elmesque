@@ -18,6 +18,6 @@ rustc-serialize = "*"
 vecmath = "0.1.1"
 
 [dev-dependencies]
-find_folder = "0.1.1"
+find_folder = "0.2.0"
 piston = "0.10.0"
-piston_window = "0.16.0"
+piston_window = "0.17.0"
