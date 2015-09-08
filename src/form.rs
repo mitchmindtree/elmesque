@@ -495,7 +495,8 @@ pub fn draw_form<'a, C: CharacterCache, G: Graphics<Texture=C::Texture>>(
                     let TextStyle { ref typeface, height, color, bold, italic, line, monospace } = *style;
                     let height = height.unwrap_or(16.0).floor();
                     let color = convert_color(color, alpha);
-                    graphics::text::Text::colored(color, height as u32)
+                    graphics::text::Text::new_color(color, height as u32)
+                        .round()
                         .draw(&string[..], *character_cache, &context.draw_state, context.transform, backend);
                 }
             }
