@@ -333,8 +333,8 @@ pub fn flow(dir: Direction, elements: Vec<Element>) -> Element {
 
 /// Layer elements on top of each other, starting from the bottom.
 pub fn layers(elements: Vec<Element>) -> Element {
-    let max_w = elements.iter().map(|e| e.get_width()).max().unwrap();
-    let max_h = elements.iter().map(|e| e.get_height()).max().unwrap();
+    let max_w = elements.iter().map(|e| e.get_width()).max().unwrap_or(0);
+    let max_h = elements.iter().map(|e| e.get_height()).max().unwrap_or(0);
     new_element(max_w, max_h, Prim::Flow(outward(), elements))
 }
 
