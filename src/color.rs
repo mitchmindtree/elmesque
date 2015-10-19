@@ -292,9 +292,16 @@ pub fn rgb_to_hsl(r: f32, g: f32, b: f32) -> (f32, f32, f32) {
     let c_max = max(max(r, g), b);
     let c_min = min(min(r, g), b);
     let c = c_max - c_min;
-    let hue = degrees(60.0) * if      c_max == r { fmod(((g - b) / c), 6) }
-                              else if c_max == g { ((b - r) / c) + 2.0 }
-                              else               { ((r - g) / c) + 4.0 };
+
+    let hue = if c == 0.0 {
+        // If there's no difference in the channels we have grayscale, so the hue is undefined.
+        0.0
+    } else {
+        degrees(60.0) * if      c_max == r { fmod(((g - b) / c), 6) }
+                        else if c_max == g { ((b - r) / c) + 2.0 }
+                        else               { ((r - g) / c) + 4.0 }
+    };
+
     let lightness = (c_max + c_min) / 2.0;
     let saturation = if lightness == 0.0 { 0.0 }
                      else { c / (1.0 - (2.0 * lightness - 1.0).abs()) };
