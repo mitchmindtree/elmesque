@@ -1,6 +1,6 @@
 [package]
 name = "elmesque"
-version = "0.10.0"
+version = "0.10.1"
 authors = ["mitchmindtree <mitchell.nordine@gmail.com>"]
 description = "An attempt at porting Elm's incredibly useful, purely functional std graphics modules."
 readme = "README.md"
@@ -19,5 +19,5 @@ vecmath = "0.2.0"
 
 [dev-dependencies]
 find_folder = "0.3.0"
-piston = "0.13.0"
-piston_window = "0.26.0"
+piston = "0.13.1"
+piston_window = "0.27.0"
