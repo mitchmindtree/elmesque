@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Element` struct in crate `elmesque`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Element">
+
+    <title>elmesque::element::Element - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>elmesque</a>::<wbr><a href='index.html'>element</a></p><script>window.sidebarCurrent = {name: 'Element', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>elmesque</a>::<wbr><a href='index.html'>element</a>::<wbr><a class='struct' href=''>Element</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-3275' class='srclink' href='../../src/elmesque/element.rs.html#80-83' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Element {
+    pub props: <a class='struct' href='../../elmesque/element/struct.Properties.html' title='elmesque::element::Properties'>Properties</a>,
+    pub element: <a class='enum' href='../../elmesque/element/enum.Prim.html' title='elmesque::element::Prim'>Prim</a>,
+}</pre><div class='docblock'><p>Graphical elements that snap together to build complex widgets and layouts.</p>
+
+<p>Each element is a rectangle with a known width and height, making them easy to combine and
+position.</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.props'><code>props</code></td><td></td></tr><tr class='stab '>
+                                  <td id='structfield.element'><code>element</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h3><div class='impl-items'><h4 id='method.width' class='method'><code>fn <a href='#method.width' class='fnname'>width</a>(self, new_width: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Create an <code>Element</code> with a given width.</p>
+</div><h4 id='method.height' class='method'><code>fn <a href='#method.height' class='fnname'>height</a>(self, new_height: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Create an <code>Element</code> with a given height.</p>
+</div><h4 id='method.size' class='method'><code>fn <a href='#method.size' class='fnname'>size</a>(self, new_w: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, new_h: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Create an <code>Element</code> with a given size.</p>
+</div><h4 id='method.opacity' class='method'><code>fn <a href='#method.opacity' class='fnname'>opacity</a>(self, opacity: <a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Create an <code>Element</code> with a given opacity.</p>
+</div><h4 id='method.color' class='method'><code>fn <a href='#method.color' class='fnname'>color</a>(self, color: <a class='enum' href='../../elmesque/color/enum.Color.html' title='elmesque::color::Color'>Color</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Create an `Element with a given background color.</p>
+</div><h4 id='method.crop' class='method'><code>fn <a href='#method.crop' class='fnname'>crop</a>(self, x: <a href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, y: <a href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, w: <a href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>, h: <a href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Crops an <code>Element</code> with the given rectangle.</p>
+</div><h4 id='method.container' class='method'><code>fn <a href='#method.container' class='fnname'>container</a>(self, w: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, h: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, pos: <a class='struct' href='../../elmesque/element/struct.Position.html' title='elmesque::element::Position'>Position</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Put an element in a container. This lets you position the element really easily, and there are
+tons of ways to set the <code>Position</code>.</p>
+</div><h4 id='method.clear' class='method'><code>fn <a href='#method.clear' class='fnname'>clear</a>(self, color: <a class='enum' href='../../elmesque/color/enum.Color.html' title='elmesque::color::Color'>Color</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Put an element in a cleared wrapper. The color provided will be the color that clears the
+screen before rendering the contained element.</p>
+</div><h4 id='method.above' class='method'><code>fn <a href='#method.above' class='fnname'>above</a>(self, other: <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Stack elements vertically. To put <code>a</code> above <code>b</code> you would say: <code>a.above(b)</code></p>
+</div><h4 id='method.below' class='method'><code>fn <a href='#method.below' class='fnname'>below</a>(self, other: <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Stack elements vertically. To put <code>a</code> below <code>b</code> you would say: <code>a.below(b)</code></p>
+</div><h4 id='method.beside' class='method'><code>fn <a href='#method.beside' class='fnname'>beside</a>(self, other: <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a>) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<div class='docblock'><p>Put elements beside each other horizontally. To put <code>b</code> to the right of <code>a</code> you would say:
+<code>a.beside(b)</code></p>
+</div><h4 id='method.get_width' class='method'><code>fn <a href='#method.get_width' class='fnname'>get_width</a>(&amp;self) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></h4>
+<div class='docblock'><p>Return the width of the Element.</p>
+</div><h4 id='method.get_height' class='method'><code>fn <a href='#method.get_height' class='fnname'>get_height</a>(&amp;self) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a></code></h4>
+<div class='docblock'><p>Return the height of the Element.</p>
+</div><h4 id='method.get_size' class='method'><code>fn <a href='#method.get_size' class='fnname'>get_size</a>(&amp;self) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>)</a></code></h4>
+<div class='docblock'><p>Return the size of the Element&#39;s bounding rectangle.</p>
+</div><h4 id='method.draw' class='method'><code>fn <a href='#method.draw' class='fnname'>draw</a>&lt;'a, C, G&gt;(&amp;self, renderer: &amp;mut <a class='struct' href='../../elmesque/element/struct.Renderer.html' title='elmesque::element::Renderer'>Renderer</a>&lt;'a, C, G&gt;) <span class='where'>where C: <a class='trait' href='../../graphics/character/trait.CharacterCache.html' title='graphics::character::CharacterCache'>CharacterCache</a>, G: <a class='trait' href='../../graphics/graphics/trait.Graphics.html' title='graphics::graphics::Graphics'>Graphics</a>&lt;Texture=C::Texture&gt;</span></code></h4>
+<div class='docblock'><p>Draw the form with some given graphics backend.</p>
+</div><h4 id='method.is_over' class='method'><code>fn <a href='#method.is_over' class='fnname'>is_over</a>(&amp;self, x: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>, y: <a href='https://doc.rust-lang.org/nightly/std/primitive.i32.html'>i32</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<div class='docblock'><p>Return whether or not a point is over the element.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../elmesque/element/struct.Element.html' title='elmesque::element::Element'>Element</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "elmesque";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

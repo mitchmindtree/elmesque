@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["clip_draw_state","Returns a default draw state that does additive blending and no culling."]]});

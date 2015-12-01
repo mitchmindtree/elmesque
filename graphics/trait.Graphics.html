@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Graphics` trait in crate `graphics`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Graphics">
+
+    <title>graphics::Graphics - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>graphics</a></p><script>window.sidebarCurrent = {name: 'Graphics', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content trait">
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>graphics</a>::<wbr><a class='trait' href=''>Graphics</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-50' class='srclink' href='../src/graphics/graphics.rs.html#15-138' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait Graphics: <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Sized.html' title='core::marker::Sized'>Sized</a> {
+    type Texture: <a class='trait' href='../graphics/trait.ImageSize.html' title='graphics::ImageSize'>ImageSize</a>;
+    fn <a href='#tymethod.clear_color' class='fnname'>clear_color</a>(&amp;mut self, color: <a href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>; 4]</a>);
+    fn <a href='#tymethod.clear_stencil' class='fnname'>clear_stencil</a>(&amp;mut self, value: <a href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>);
+    fn <a href='#tymethod.tri_list' class='fnname'>tri_list</a>&lt;F&gt;(&amp;mut self, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, color: &amp;<a href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>; 4]</a>, f: F) <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(&amp;mut <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>))</span>;
+    fn <a href='#tymethod.tri_list_uv' class='fnname'>tri_list_uv</a>&lt;F&gt;(&amp;mut self, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, color: &amp;<a href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>; 4]</a>, texture: &amp;Self::Texture, f: F) <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(&amp;mut <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>))</span>;
+
+    fn <a href='#method.rectangle' class='fnname'>rectangle</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;&gt;(&amp;mut self, r: &amp;<a class='struct' href='../graphics/rectangle/struct.Rectangle.html' title='graphics::rectangle::Rectangle'>Rectangle</a>, rectangle: R, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.polygon' class='fnname'>polygon</a>(&amp;mut self, p: &amp;<a class='struct' href='../graphics/polygon/struct.Polygon.html' title='graphics::polygon::Polygon'>Polygon</a>, polygon: <a class='type' href='../graphics/types/type.Polygon.html' title='graphics::types::Polygon'>Polygon</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.polygon_tween_lerp' class='fnname'>polygon_tween_lerp</a>(&amp;mut self, p: &amp;<a class='struct' href='../graphics/polygon/struct.Polygon.html' title='graphics::polygon::Polygon'>Polygon</a>, polygons: <a class='type' href='../graphics/types/type.Polygons.html' title='graphics::types::Polygons'>Polygons</a>, tween_factor: <a class='type' href='../graphics/math/type.Scalar.html' title='graphics::math::Scalar'>Scalar</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.image' class='fnname'>image</a>(&amp;mut self, image: &amp;<a class='struct' href='../graphics/image/struct.Image.html' title='graphics::image::Image'>Image</a>, texture: &amp;Self::<a class='trait' href='../graphics/trait.Graphics.html' title='graphics::Graphics'>Texture</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.ellipse' class='fnname'>ellipse</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;&gt;(&amp;mut self, e: &amp;<a class='struct' href='../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a>, rectangle: R, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.line' class='fnname'>line</a>&lt;L: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Line.html' title='graphics::types::Line'>Line</a>&gt;&gt;(&amp;mut self, l: &amp;<a class='struct' href='../graphics/line/struct.Line.html' title='graphics::line::Line'>Line</a>, line: L, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.circle_arc' class='fnname'>circle_arc</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;&gt;(&amp;mut self, c: &amp;<a class='struct' href='../graphics/circle_arc/struct.CircleArc.html' title='graphics::circle_arc::CircleArc'>CircleArc</a>, rectangle: R, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+    fn <a href='#method.deform_image' class='fnname'>deform_image</a>(&amp;mut self, d: &amp;<a class='struct' href='../graphics/deform/struct.DeformGrid.html' title='graphics::deform::DeformGrid'>DeformGrid</a>, texture: &amp;Self::<a class='trait' href='../graphics/trait.Graphics.html' title='graphics::Graphics'>Texture</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>) { ... }
+}</pre><div class='docblock'><p>Implemented by all graphics back-ends.</p>
+</div>
+            <h2 id='associated-types'>Associated Types</h2>
+            <div class='methods'>
+        <h3 id='associatedtype.Texture' class='method stab '><code>type Texture: <a class='trait' href='../graphics/trait.ImageSize.html' title='graphics::ImageSize'>ImageSize</a></code></h3><div class='docblock'><p>The texture type associated with the back-end.</p>
+</div></div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.clear_color' class='method stab '><code>fn <a href='#tymethod.clear_color' class='fnname'>clear_color</a>(&amp;mut self, color: <a href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>; 4]</a>)</code></h3><div class='docblock'><p>Clears background with a color.</p>
+</div><h3 id='tymethod.clear_stencil' class='method stab '><code>fn <a href='#tymethod.clear_stencil' class='fnname'>clear_stencil</a>(&amp;mut self, value: <a href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a>)</code></h3><div class='docblock'><p>Clears stencil buffer with a value.</p>
+</div><h3 id='tymethod.tri_list' class='method stab '><code>fn <a href='#tymethod.tri_list' class='fnname'>tri_list</a>&lt;F&gt;(&amp;mut self, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, color: &amp;<a href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>; 4]</a>, f: F) <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(&amp;mut <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>))</span></code></h3><div class='docblock'><p>Renders list of 2d triangles.</p>
+</div><h3 id='tymethod.tri_list_uv' class='method stab '><code>fn <a href='#tymethod.tri_list_uv' class='fnname'>tri_list_uv</a>&lt;F&gt;(&amp;mut self, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, color: &amp;<a href='https://doc.rust-lang.org/nightly/std/primitive.array.html'>[<a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a>; 4]</a>, texture: &amp;Self::Texture, f: F) <span class='where'>where F: <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(&amp;mut <a class='trait' href='https://doc.rust-lang.org/nightly/core/ops/trait.FnMut.html' title='core::ops::FnMut'>FnMut</a>(<a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>, <a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a href='https://doc.rust-lang.org/nightly/std/primitive.f32.html'>f32</a><a href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>))</span></code></h3><div class='docblock'><p>Renders list of 2d triangles.</p>
+
+<p>A texture coordinate is assigned per vertex.
+The texture coordinates refers to the current texture.</p>
+</div></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.rectangle' class='method stab '><code>fn <a href='#method.rectangle' class='fnname'>rectangle</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;&gt;(&amp;mut self, r: &amp;<a class='struct' href='../graphics/rectangle/struct.Rectangle.html' title='graphics::rectangle::Rectangle'>Rectangle</a>, rectangle: R, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws a rectangle.</p>
+</div><h3 id='method.polygon' class='method stab '><code>fn <a href='#method.polygon' class='fnname'>polygon</a>(&amp;mut self, p: &amp;<a class='struct' href='../graphics/polygon/struct.Polygon.html' title='graphics::polygon::Polygon'>Polygon</a>, polygon: <a class='type' href='../graphics/types/type.Polygon.html' title='graphics::types::Polygon'>Polygon</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws a polygon.</p>
+</div><h3 id='method.polygon_tween_lerp' class='method stab '><code>fn <a href='#method.polygon_tween_lerp' class='fnname'>polygon_tween_lerp</a>(&amp;mut self, p: &amp;<a class='struct' href='../graphics/polygon/struct.Polygon.html' title='graphics::polygon::Polygon'>Polygon</a>, polygons: <a class='type' href='../graphics/types/type.Polygons.html' title='graphics::types::Polygons'>Polygons</a>, tween_factor: <a class='type' href='../graphics/math/type.Scalar.html' title='graphics::math::Scalar'>Scalar</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws a tweened polygon using linear interpolation.</p>
+</div><h3 id='method.image' class='method stab '><code>fn <a href='#method.image' class='fnname'>image</a>(&amp;mut self, image: &amp;<a class='struct' href='../graphics/image/struct.Image.html' title='graphics::image::Image'>Image</a>, texture: &amp;Self::<a class='trait' href='../graphics/trait.Graphics.html' title='graphics::Graphics'>Texture</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws image.</p>
+</div><h3 id='method.ellipse' class='method stab '><code>fn <a href='#method.ellipse' class='fnname'>ellipse</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;&gt;(&amp;mut self, e: &amp;<a class='struct' href='../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a>, rectangle: R, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws ellipse.</p>
+</div><h3 id='method.line' class='method stab '><code>fn <a href='#method.line' class='fnname'>line</a>&lt;L: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Line.html' title='graphics::types::Line'>Line</a>&gt;&gt;(&amp;mut self, l: &amp;<a class='struct' href='../graphics/line/struct.Line.html' title='graphics::line::Line'>Line</a>, line: L, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws line.</p>
+</div><h3 id='method.circle_arc' class='method stab '><code>fn <a href='#method.circle_arc' class='fnname'>circle_arc</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;&gt;(&amp;mut self, c: &amp;<a class='struct' href='../graphics/circle_arc/struct.CircleArc.html' title='graphics::circle_arc::CircleArc'>CircleArc</a>, rectangle: R, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws circle arc.</p>
+</div><h3 id='method.deform_image' class='method stab '><code>fn <a href='#method.deform_image' class='fnname'>deform_image</a>(&amp;mut self, d: &amp;<a class='struct' href='../graphics/deform/struct.DeformGrid.html' title='graphics::deform::DeformGrid'>DeformGrid</a>, texture: &amp;Self::<a class='trait' href='../graphics/trait.Graphics.html' title='graphics::Graphics'>Texture</a>, draw_state: &amp;<a class='struct' href='../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>)</code></h3><div class='docblock'><p>Draws deformed image.</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    </ul><script type="text/javascript" async
+                              src="../implementors/graphics/trait.Graphics.js">
+                      </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "graphics";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>

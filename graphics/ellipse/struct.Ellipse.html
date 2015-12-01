@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Ellipse` struct in crate `graphics`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Ellipse">
+
+    <title>graphics::ellipse::Ellipse - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>graphics</a>::<wbr><a href='index.html'>ellipse</a></p><script>window.sidebarCurrent = {name: 'Ellipse', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>graphics</a>::<wbr><a href='index.html'>ellipse</a>::<wbr><a class='struct' href=''>Ellipse</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-3195' class='srclink' href='../../src/graphics/ellipse.rs.html#21-28' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Ellipse {
+    pub color: <a class='type' href='../../graphics/types/type.Color.html' title='graphics::types::Color'>Color</a>,
+    pub border: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../graphics/ellipse/struct.Border.html' title='graphics::ellipse::Border'>Border</a>&gt;,
+    pub resolution: <a class='type' href='../../graphics/types/type.Resolution.html' title='graphics::types::Resolution'>Resolution</a>,
+}</pre><div class='docblock'><p>An ellipse with filled color</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.color'><code>color</code></td><td><div class='docblock'><p>The ellipse color</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.border'><code>border</code></td><td><div class='docblock'><p>The ellipse border</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.resolution'><code>resolution</code></td><td><div class='docblock'><p>The resolution for the shape, 360 degrees.</p>
+</div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>(color: <a class='type' href='../../graphics/types/type.Color.html' title='graphics::types::Color'>Color</a>) -&gt; <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h4>
+<div class='docblock'><p>Creates a new ellipse</p>
+</div><h4 id='method.new_border' class='method'><code>fn <a href='#method.new_border' class='fnname'>new_border</a>(color: <a class='type' href='../../graphics/types/type.Color.html' title='graphics::types::Color'>Color</a>, radius: <a class='type' href='../../graphics/types/type.Radius.html' title='graphics::types::Radius'>Radius</a>) -&gt; <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h4>
+<div class='docblock'><p>Creates a new ellipse border</p>
+</div><h4 id='method.color' class='method'><code>fn <a href='#method.color' class='fnname'>color</a>(self, value: <a class='type' href='../../graphics/types/type.Color.html' title='graphics::types::Color'>Color</a>) -&gt; Self</code></h4>
+<div class='docblock'><p>Sets ellipse color.</p>
+</div><h4 id='method.border' class='method'><code>fn <a href='#method.border' class='fnname'>border</a>(self, value: <a class='struct' href='../../graphics/ellipse/struct.Border.html' title='graphics::ellipse::Border'>Border</a>) -&gt; Self</code></h4>
+<div class='docblock'><p>Sets ellipse border.</p>
+</div><h4 id='method.maybe_border' class='method'><code>fn <a href='#method.maybe_border' class='fnname'>maybe_border</a>(self, value: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../../graphics/ellipse/struct.Border.html' title='graphics::ellipse::Border'>Border</a>&gt;) -&gt; Self</code></h4>
+<div class='docblock'><p>Sets optional ellipse border.</p>
+</div><h4 id='method.resolution' class='method'><code>fn <a href='#method.resolution' class='fnname'>resolution</a>(self, value: <a class='type' href='../../graphics/types/type.Resolution.html' title='graphics::types::Resolution'>Resolution</a>) -&gt; Self</code></h4>
+<div class='docblock'><p>Sets resolution of the ellipse smoothness.</p>
+</div><h4 id='method.draw' class='method'><code>fn <a href='#method.draw' class='fnname'>draw</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;, G&gt;(&amp;self, rectangle: R, draw_state: &amp;<a class='struct' href='../../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>, g: &amp;mut G) <span class='where'>where G: <a class='trait' href='../../graphics/trait.Graphics.html' title='graphics::Graphics'>Graphics</a></span></code></h4>
+<div class='docblock'><p>Draws ellipse using default method.</p>
+</div><h4 id='method.draw_tri' class='method'><code>fn <a href='#method.draw_tri' class='fnname'>draw_tri</a>&lt;R: <a class='trait' href='https://doc.rust-lang.org/nightly/core/convert/trait.Into.html' title='core::convert::Into'>Into</a>&lt;<a class='type' href='../../graphics/types/type.Rectangle.html' title='graphics::types::Rectangle'>Rectangle</a>&gt;, G&gt;(&amp;self, rectangle: R, draw_state: &amp;<a class='struct' href='../../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>, g: &amp;mut G) <span class='where'>where G: <a class='trait' href='../../graphics/trait.Graphics.html' title='graphics::Graphics'>Graphics</a></span></code></h4>
+<div class='docblock'><p>Draws ellipse using triangulation.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><code>impl <a class='trait' href='../../graphics/trait.Colored.html' title='graphics::Colored'>Colored</a> for <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h3><div class='impl-items'><h4 id='method.mul_rgba' class='method'><code>fn <a href='../../graphics/trait.Colored.html#method.mul_rgba' class='fnname'>mul_rgba</a>(self, r: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>, g: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>, b: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>, a: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>) -&gt; Self</code></h4>
+<h4 id='method.hue_rad' class='method'><code>fn <a href='../../graphics/trait.Colored.html#method.hue_rad' class='fnname'>hue_rad</a>(self, angle: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>) -&gt; Self</code></h4>
+<h4 id='method.tint' class='method'><code>fn <a href='../../graphics/trait.Colored.html#method.tint' class='fnname'>tint</a>(self, f: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>) -&gt; Self</code></h4>
+<h4 id='method.shade' class='method'><code>fn <a href='../../graphics/trait.Colored.html#method.shade' class='fnname'>shade</a>(self, f: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>) -&gt; Self</code></h4>
+<h4 id='method.hue_deg' class='method'><code>fn <a href='../../graphics/trait.Colored.html#method.hue_deg' class='fnname'>hue_deg</a>(self, angle: <a class='type' href='../../graphics/types/type.ColorComponent.html' title='graphics::types::ColorComponent'>ColorComponent</a>) -&gt; Self</code></h4>
+</div><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='struct' href='../../graphics/ellipse/struct.Ellipse.html' title='graphics::ellipse::Ellipse'>Ellipse</a></code></h3><div class='impl-items'></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "graphics";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

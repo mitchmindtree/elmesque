@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["BlendPreset","Blend function presets for ease of use."]],"mod":[["state","Fixed-function hardware state."],["target","Render target specification."]],"struct":[["DrawState","An assembly of states that affect regular draw calls"]]});

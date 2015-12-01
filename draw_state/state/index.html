@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `state` mod in crate `draw_state`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, state">
+
+    <title>draw_state::state - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>draw_state</a></p><script>window.sidebarCurrent = {name: 'state', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>draw_state</a>::<wbr><a class='mod' href=''>state</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-5' class='srclink' href='../../src/draw_state/state.rs.html#15-305' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Fixed-function hardware state.</p>
+
+<p>Configures the primitive assembly (PA), rasterizer, and output merger (OM) blocks.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Blend.html'
+                               title='draw_state::state::Blend'>Blend</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.BlendChannel.html'
+                               title='draw_state::state::BlendChannel'>BlendChannel</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.ColorMask.html'
+                               title='draw_state::state::ColorMask'>ColorMask</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Depth.html'
+                               title='draw_state::state::Depth'>Depth</a></td>
+                        <td class='docblock short'>
+                             <p>Depth test state.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.MultiSample.html'
+                               title='draw_state::state::MultiSample'>MultiSample</a></td>
+                        <td class='docblock short'>
+                             <p>Multi-sampling rasterization mode</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Offset.html'
+                               title='draw_state::state::Offset'>Offset</a></td>
+                        <td class='docblock short'>
+                             <p>How to offset vertices in screen space, if at all.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Primitive.html'
+                               title='draw_state::state::Primitive'>Primitive</a></td>
+                        <td class='docblock short'>
+                             <p>Primitive rasterization state. Note that GL allows different raster
+method to be used for front and back, while this abstraction does not.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Stencil.html'
+                               title='draw_state::state::Stencil'>Stencil</a></td>
+                        <td class='docblock short'>
+                             <p>Complete stencil state, specifying how to handle the front and back side of a face.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.StencilSide.html'
+                               title='draw_state::state::StencilSide'>StencilSide</a></td>
+                        <td class='docblock short'>
+                             <p>Complete stencil state for a given side of a face.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.BlendValue.html'
+                               title='draw_state::state::BlendValue'>BlendValue</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Comparison.html'
+                               title='draw_state::state::Comparison'>Comparison</a></td>
+                        <td class='docblock short'>
+                             <p>A pixel-wise comparison function.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.CullFace.html'
+                               title='draw_state::state::CullFace'>CullFace</a></td>
+                        <td class='docblock short'>
+                             <p>Which face, if any, to cull.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Equation.html'
+                               title='draw_state::state::Equation'>Equation</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Factor.html'
+                               title='draw_state::state::Factor'>Factor</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.FrontFace.html'
+                               title='draw_state::state::FrontFace'>FrontFace</a></td>
+                        <td class='docblock short'>
+                             <p>The front face winding order of a set of vertices.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.RasterMethod.html'
+                               title='draw_state::state::RasterMethod'>RasterMethod</a></td>
+                        <td class='docblock short'>
+                             <p>How to rasterize a primitive.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.StencilOp.html'
+                               title='draw_state::state::StencilOp'>StencilOp</a></td>
+                        <td class='docblock short'>
+                             <p>Stencil mask operation.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='constants' class='section-header'><a href="#constants">Constants</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.ALPHA.html'
+                               title='draw_state::state::ALPHA'>ALPHA</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.BLUE.html'
+                               title='draw_state::state::BLUE'>BLUE</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.GREEN.html'
+                               title='draw_state::state::GREEN'>GREEN</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.MASK_ALL.html'
+                               title='draw_state::state::MASK_ALL'>MASK_ALL</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.MASK_NONE.html'
+                               title='draw_state::state::MASK_NONE'>MASK_NONE</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='constant' href='constant.RED.html'
+                               title='draw_state::state::RED'>RED</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='type' href='type.LineWidth.html'
+                               title='draw_state::state::LineWidth'>LineWidth</a></td>
+                        <td class='docblock short'>
+                             <p>Width of a line.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='type' href='type.OffsetFactor.html'
+                               title='draw_state::state::OffsetFactor'>OffsetFactor</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='type' href='type.OffsetUnits.html'
+                               title='draw_state::state::OffsetUnits'>OffsetUnits</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "draw_state";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

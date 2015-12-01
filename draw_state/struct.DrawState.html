@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `DrawState` struct in crate `draw_state`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, DrawState">
+
+    <title>draw_state::DrawState - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='index.html'>draw_state</a></p><script>window.sidebarCurrent = {name: 'DrawState', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>draw_state</a>::<wbr><a class='struct' href=''>DrawState</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-18825' class='srclink' href='../src/draw_state/lib.rs.html#31-48' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>#[must_use]
+pub struct DrawState {
+    pub primitive: <a class='struct' href='../draw_state/state/struct.Primitive.html' title='draw_state::state::Primitive'>Primitive</a>,
+    pub multi_sample: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../draw_state/state/struct.MultiSample.html' title='draw_state::state::MultiSample'>MultiSample</a>&gt;,
+    pub scissor: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../draw_state/target/struct.Rect.html' title='draw_state::target::Rect'>Rect</a>&gt;,
+    pub stencil: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../draw_state/state/struct.Stencil.html' title='draw_state::state::Stencil'>Stencil</a>&gt;,
+    pub depth: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../draw_state/state/struct.Depth.html' title='draw_state::state::Depth'>Depth</a>&gt;,
+    pub blend: <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='struct' href='../draw_state/state/struct.Blend.html' title='draw_state::state::Blend'>Blend</a>&gt;,
+    pub color_mask: <a class='struct' href='../draw_state/state/struct.ColorMask.html' title='draw_state::state::ColorMask'>ColorMask</a>,
+}</pre><div class='docblock'><p>An assembly of states that affect regular draw calls</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.primitive'><code>primitive</code></td><td><div class='docblock'><p>How to rasterize geometric primitives.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.multi_sample'><code>multi_sample</code></td><td><div class='docblock'><p>Multi-sampling mode</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.scissor'><code>scissor</code></td><td><div class='docblock'><p>Scissor mask to use. If set, no pixel outside of this rectangle (in screen space) will be
+written to as a result of rendering.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.stencil'><code>stencil</code></td><td><div class='docblock'><p>Stencil test to use. If None, no stencil testing is done.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.depth'><code>depth</code></td><td><div class='docblock'><p>Depth test to use. If None, no depth testing is done.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.blend'><code>blend</code></td><td><div class='docblock'><p>Blend function to use. If None, no blending is done.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.color_mask'><code>color_mask</code></td><td><div class='docblock'><p>Color mask to use. Each flag indicates that the given color channel can be written to, and
+they can be OR&#39;d together.</p>
+</div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h3><div class='impl-items'><h4 id='method.new' class='method'><code>fn <a href='#method.new' class='fnname'>new</a>() -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<div class='docblock'><p>Create a default <code>DrawState</code>. Uses counter-clockwise winding, culls the backface of each
+primitive, and does no scissor/stencil/depth/blend/color masking.</p>
+</div><h4 id='method.get_target_mask' class='method'><code>fn <a href='#method.get_target_mask' class='fnname'>get_target_mask</a>(&amp;self) -&gt; <a class='struct' href='../draw_state/target/struct.Mask.html' title='draw_state::target::Mask'>Mask</a></code></h4>
+<div class='docblock'><p>Return a target mask that contains all the planes required by this state.</p>
+</div><h4 id='method.multi_sample' class='method'><code>fn <a href='#method.multi_sample' class='fnname'>multi_sample</a>(self) -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<div class='docblock'><p>Enable multi-sampled rasterization</p>
+</div><h4 id='method.stencil' class='method'><code>fn <a href='#method.stencil' class='fnname'>stencil</a>(self, fun: <a class='enum' href='../draw_state/state/enum.Comparison.html' title='draw_state::state::Comparison'>Comparison</a>, value: <a class='type' href='../draw_state/target/type.Stencil.html' title='draw_state::target::Stencil'>Stencil</a>) -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<div class='docblock'><p>Set the stencil test to a simple expression</p>
+</div><h4 id='method.depth' class='method'><code>fn <a href='#method.depth' class='fnname'>depth</a>(self, fun: <a class='enum' href='../draw_state/state/enum.Comparison.html' title='draw_state::state::Comparison'>Comparison</a>, write: <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a>) -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<div class='docblock'><p>Set the depth test with the mask</p>
+</div><h4 id='method.scissor' class='method'><code>fn <a href='#method.scissor' class='fnname'>scissor</a>(self, x: <a href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, y: <a href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, w: <a href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>, h: <a href='https://doc.rust-lang.org/nightly/std/primitive.u16.html'>u16</a>) -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<div class='docblock'><p>Set the scissor</p>
+</div><h4 id='method.blend' class='method'><code>fn <a href='#method.blend' class='fnname'>blend</a>(self, preset: <a class='enum' href='../draw_state/enum.BlendPreset.html' title='draw_state::BlendPreset'>BlendPreset</a>) -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<div class='docblock'><p>Set the blend mode to one of the presets</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html' title='core::cmp::PartialOrd'>PartialOrd</a> for <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h3><div class='impl-items'><h4 id='method.partial_cmp' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.partial_cmp' class='fnname'>partial_cmp</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/option/enum.Option.html' title='core::option::Option'>Option</a>&lt;<a class='enum' href='https://doc.rust-lang.org/nightly/core/cmp/enum.Ordering.html' title='core::cmp::Ordering'>Ordering</a>&gt;</code></h4>
+<h4 id='method.lt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.lt' class='fnname'>lt</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.le' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.le' class='fnname'>le</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.gt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.gt' class='fnname'>gt</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ge' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialOrd.html#method.ge' class='fnname'>ge</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html' title='core::cmp::PartialEq'>PartialEq</a> for <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h3><div class='impl-items'><h4 id='method.eq' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.eq' class='fnname'>eq</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+<h4 id='method.ne' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html#method.ne' class='fnname'>ne</a>(&amp;self, __arg_0: &amp;<a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a>) -&gt; <a href='https://doc.rust-lang.org/nightly/std/primitive.bool.html'>bool</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='struct' href='../draw_state/struct.DrawState.html' title='draw_state::DrawState'>DrawState</a></code></h3><div class='impl-items'></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "draw_state";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    
+    <script async src="../search-index.js"></script>
+</body>
+</html>

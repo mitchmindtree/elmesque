@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `element` mod in crate `elmesque`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, element">
+
+    <title>elmesque::element - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>elmesque</a></p><script>window.sidebarCurrent = {name: 'element', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>elmesque</a>::<wbr><a class='mod' href=''>element</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-3126' class='srclink' href='../../src/elmesque/element.rs.html#1-614' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Ported from <a href="https://github.com/elm-lang/core/blob/1.1.1/src/Graphics/Element.elm">elm-lang&#39;s <code>Graphics.Element</code> module</a></p>
+
+<p>Graphical elements that snap together to build complex widgets and layouts.</p>
+
+<p>Each element is a rectangle with a known width and height, making them easy to combine and
+position.</p>
+
+<h1 id="images" class='section-header'><a
+                           href="#images">Images</a></h1>
+<p>image, fitted_image, cropped_image, tiled_image</p>
+
+<h1 id="styling" class='section-header'><a
+                           href="#styling">Styling</a></h1>
+<p>width, height, size, color, opacity</p>
+
+<h1 id="inspection" class='section-header'><a
+                           href="#inspection">Inspection</a></h1>
+<p>width_of, height_of, size_of</p>
+
+<h1 id="layout" class='section-header'><a
+                           href="#layout">Layout</a></h1>
+<p>flow, up, down, left, right, inward, outward</p>
+
+<h2 id="layout-aliases" class='section-header'><a
+                           href="#layout-aliases">Layout Aliases</a></h2>
+<p>There are some convenience functions for working with <code>flow</code> in specific cases:</p>
+
+<p>layers, above, below, beside</p>
+
+<h1 id="positioning" class='section-header'><a
+                           href="#positioning">Positioning</a></h1>
+<p>empty, spacer, container</p>
+
+<h2 id="specific-positions" class='section-header'><a
+                           href="#specific-positions">Specific Positions</a></h2>
+<p>To create a <code>Position</code> you can use any of the built-in positions which cover nine common
+positions:</p>
+
+<p>middle, mid_top, mid_bottom, mid_left, mid_right, top_left, top_right, bottom_left,
+  bottom_right</p>
+
+<p>If you need more precision, you can create custom positions:</p>
+
+<p>absolute, relative, middle_at, mid_top_at, mid_bottom_at, mid_left_at, mid_right_at,
+  top_left_at, top_right_at, bottom_left_at, bottom_right_at</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Element.html'
+                               title='elmesque::element::Element'>Element</a></td>
+                        <td class='docblock short'>
+                             <p>Graphical elements that snap together to build complex widgets and layouts.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Position.html'
+                               title='elmesque::element::Position'>Position</a></td>
+                        <td class='docblock short'>
+                             <p>An element&#39;s Position.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Properties.html'
+                               title='elmesque::element::Properties'>Properties</a></td>
+                        <td class='docblock short'>
+                             <p>An Element&#39;s Properties.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Renderer.html'
+                               title='elmesque::element::Renderer'>Renderer</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Direction.html'
+                               title='elmesque::element::Direction'>Direction</a></td>
+                        <td class='docblock short'>
+                             <p>The direction for a flow of <code>Element</code>s.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.ImageStyle.html'
+                               title='elmesque::element::ImageStyle'>ImageStyle</a></td>
+                        <td class='docblock short'>
+                             <p>Styling for the Image Element.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Pos.html'
+                               title='elmesque::element::Pos'>Pos</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Prim.html'
+                               title='elmesque::element::Prim'>Prim</a></td>
+                        <td class='docblock short'>
+                             <p>The various kinds of Elements.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='enum' href='enum.Three.html'
+                               title='elmesque::element::Three'>Three</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.absolute.html'
+                               title='elmesque::element::absolute'>absolute</a></td>
+                        <td class='docblock short'>
+                             <p>Repetitive things.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.bottom_left.html'
+                               title='elmesque::element::bottom_left'>bottom_left</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.bottom_left_at.html'
+                               title='elmesque::element::bottom_left_at'>bottom_left_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.bottom_right.html'
+                               title='elmesque::element::bottom_right'>bottom_right</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.bottom_right_at.html'
+                               title='elmesque::element::bottom_right_at'>bottom_right_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.cropped_image.html'
+                               title='elmesque::element::cropped_image'>cropped_image</a></td>
+                        <td class='docblock short'>
+                             <p>Create a cropped image. Take a rectangle out of the picture starting at the given top left
+coordinate.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.down.html'
+                               title='elmesque::element::down'>down</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.draw_element.html'
+                               title='elmesque::element::draw_element'>draw_element</a></td>
+                        <td class='docblock short'>
+                             <p>Draw an Element.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.empty.html'
+                               title='elmesque::element::empty'>empty</a></td>
+                        <td class='docblock short'>
+                             <p>An Element that takes up no space. Good for things that appear conditionally.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.fitted_image.html'
+                               title='elmesque::element::fitted_image'>fitted_image</a></td>
+                        <td class='docblock short'>
+                             <p>Create a fitted image given a width, height and texture. This will crop the picture to best
+fill the given dimensions.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.flow.html'
+                               title='elmesque::element::flow'>flow</a></td>
+                        <td class='docblock short'>
+                             <p>Have a list of elements flow in a particular direction. The <code>Direction</code> starts from the first
+element in the list. The result is an <code>Element</code>.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.image.html'
+                               title='elmesque::element::image'>image</a></td>
+                        <td class='docblock short'>
+                             <p>Create an image given a width, height and texture.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.inward.html'
+                               title='elmesque::element::inward'>inward</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.layers.html'
+                               title='elmesque::element::layers'>layers</a></td>
+                        <td class='docblock short'>
+                             <p>Layer elements on top of each other, starting from the bottom.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.left.html'
+                               title='elmesque::element::left'>left</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_bottom.html'
+                               title='elmesque::element::mid_bottom'>mid_bottom</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_bottom_at.html'
+                               title='elmesque::element::mid_bottom_at'>mid_bottom_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_left.html'
+                               title='elmesque::element::mid_left'>mid_left</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_left_at.html'
+                               title='elmesque::element::mid_left_at'>mid_left_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_right.html'
+                               title='elmesque::element::mid_right'>mid_right</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_right_at.html'
+                               title='elmesque::element::mid_right_at'>mid_right_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_top.html'
+                               title='elmesque::element::mid_top'>mid_top</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.mid_top_at.html'
+                               title='elmesque::element::mid_top_at'>mid_top_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.middle.html'
+                               title='elmesque::element::middle'>middle</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.middle_at.html'
+                               title='elmesque::element::middle_at'>middle_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.new_element.html'
+                               title='elmesque::element::new_element'>new_element</a></td>
+                        <td class='docblock short'>
+                             <p>Construct a new Element from width, height and some Prim.
+Iterates the global GUID counter by one and returns that as the Element id.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.outward.html'
+                               title='elmesque::element::outward'>outward</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.relative.html'
+                               title='elmesque::element::relative'>relative</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.right.html'
+                               title='elmesque::element::right'>right</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.size_of.html'
+                               title='elmesque::element::size_of'>size_of</a></td>
+                        <td class='docblock short'>
+                             <p>Return the size of the Element.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.spacer.html'
+                               title='elmesque::element::spacer'>spacer</a></td>
+                        <td class='docblock short'>
+                             <p>Create an empty box. this is useful for getting your spacing right and making borders.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.tiled_image.html'
+                               title='elmesque::element::tiled_image'>tiled_image</a></td>
+                        <td class='docblock short'>
+                             <p>Create a tiled image given a width, height and texture.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.top_left.html'
+                               title='elmesque::element::top_left'>top_left</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.top_left_at.html'
+                               title='elmesque::element::top_left_at'>top_left_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.top_right.html'
+                               title='elmesque::element::top_right'>top_right</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.top_right_at.html'
+                               title='elmesque::element::top_right_at'>top_right_at</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.up.html'
+                               title='elmesque::element::up'>up</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "elmesque";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

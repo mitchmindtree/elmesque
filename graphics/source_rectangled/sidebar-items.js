@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["SourceRectangled","Should be implemented by contexts that have source rectangle information."]]});

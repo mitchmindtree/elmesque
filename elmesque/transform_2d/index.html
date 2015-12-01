@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `transform_2d` mod in crate `elmesque`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, transform_2d">
+
+    <title>elmesque::transform_2d - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>elmesque</a></p><script>window.sidebarCurrent = {name: 'transform_2d', ty: 'mod', relpath: '../'};</script><script defer src="../sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content mod">
+<h1 class='fqn'><span class='in-band'>Module <a href='../index.html'>elmesque</a>::<wbr><a class='mod' href=''>transform_2d</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-10175' class='srclink' href='../../src/elmesque/transform_2d.rs.html#1-103' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>Ported from <a href="https://github.com/elm-lang/core/blob/62b22218c42fb8ccc996c86bea450a14991ab815/src/Transform2D.elm">elm-lang&#39;s Transform2D module</a></p>
+
+<p>A library for performing 2D matrix transformations. It is used primarily with the
+<code>group_transform</code> function from the <code>form</code> module and allows you to do things like rotation,
+scaling, translation, shearing and reflection.</p>
+
+<p>Note that all the matrices in this library are 3*3 matrices of homogeneous coordinates, used
+for affine transformations. Since the bottom row is always <code>0 0 1</code> in these matrices, it is
+omitted in the diagrams below.</p>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='struct' href='struct.Transform2D.html'
+                               title='elmesque::transform_2d::Transform2D'>Transform2D</a></td>
+                        <td class='docblock short'>
+                             <p>Represents a 2D transform.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.identity.html'
+                               title='elmesque::transform_2d::identity'>identity</a></td>
+                        <td class='docblock short'>
+                             <p>Create an identity transform. Transforming by the identity does not change anything, but it can
+come in handy as a default or base case.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.matrix.html'
+                               title='elmesque::transform_2d::matrix'>matrix</a></td>
+                        <td class='docblock short'>
+                             <p>Creates a transformation matrix. This lets you create transforms such as scales, shears,
+reflections and translations.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.rotation.html'
+                               title='elmesque::transform_2d::rotation'>rotation</a></td>
+                        <td class='docblock short'>
+                             <p>Create a <a href="http://en.wikipedia.org/wiki/Rotation_matrix">rotation matrix</a>. Given an angle t, it
+creates a counterclockwise rotation matrix.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.scale.html'
+                               title='elmesque::transform_2d::scale'>scale</a></td>
+                        <td class='docblock short'>
+                             <p>Creates a transformation matrix for scaling by all directions.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.scale_x.html'
+                               title='elmesque::transform_2d::scale_x'>scale_x</a></td>
+                        <td class='docblock short'>
+                             <p>Creates a transformation for horizontal scaling.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.scale_y.html'
+                               title='elmesque::transform_2d::scale_y'>scale_y</a></td>
+                        <td class='docblock short'>
+                             <p>Creates a transformation for vertical scaling.</p>
+
+                        </td>
+                    </tr>
+                
+                    <tr class=' module-item'>
+                        <td><a class='fn' href='fn.translation.html'
+                               title='elmesque::transform_2d::translation'>translation</a></td>
+                        <td class='docblock short'>
+                             <p>Creates a transformation matrix for translation.</p>
+
+                        </td>
+                    </tr>
+                </table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
+<table>
+                    <tr class=' module-item'>
+                        <td><a class='type' href='type.Matrix2d.html'
+                               title='elmesque::transform_2d::Matrix2d'>Matrix2d</a></td>
+                        <td class='docblock short'>
+                             
+                        </td>
+                    </tr>
+                </table></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "elmesque";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

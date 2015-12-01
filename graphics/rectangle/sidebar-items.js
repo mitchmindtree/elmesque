@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["Shape","The shape of the rectangle"]],"fn":[["centered","Use x, y, half-width, half-height"],["centered_square","Use centered square"],["square","Use square with x, y in upper left corner"]],"struct":[["Border","The border of the rectangle"],["Rectangle","A filled rectangle"]]});

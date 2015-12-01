@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Grid` struct in crate `graphics`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Grid">
+
+    <title>graphics::grid::Grid - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>graphics</a>::<wbr><a href='index.html'>grid</a></p><script>window.sidebarCurrent = {name: 'Grid', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>graphics</a>::<wbr><a href='index.html'>grid</a>::<wbr><a class='struct' href=''>Grid</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-12404' class='srclink' href='../../src/graphics/grid.rs.html#8-15' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Grid {
+    pub cols: <a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
+    pub rows: <a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>,
+    pub units: <a class='type' href='../../graphics/math/type.Scalar.html' title='graphics::math::Scalar'>Scalar</a>,
+}</pre><div class='docblock'><p>Represents a flat grid with square cells.</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.cols'><code>cols</code></td><td><div class='docblock'><p>Number of columns.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.rows'><code>rows</code></td><td><div class='docblock'><p>Number of rows.</p>
+</div></td></tr><tr class='stab '>
+                                  <td id='structfield.units'><code>units</code></td><td><div class='docblock'><p>The width and height of each grid cell.</p>
+</div></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../graphics/grid/struct.Grid.html' title='graphics::grid::Grid'>Grid</a></code></h3><div class='impl-items'><h4 id='method.draw' class='method'><code>fn <a href='#method.draw' class='fnname'>draw</a>&lt;G&gt;(&amp;self, line: &amp;<a class='struct' href='../../graphics/line/struct.Line.html' title='graphics::line::Line'>Line</a>, draw_state: &amp;<a class='struct' href='../../graphics/struct.DrawState.html' title='graphics::DrawState'>DrawState</a>, transform: <a class='type' href='../../graphics/math/type.Matrix2d.html' title='graphics::math::Matrix2d'>Matrix2d</a>, g: &amp;mut G) <span class='where'>where G: <a class='trait' href='../../graphics/trait.Graphics.html' title='graphics::Graphics'>Graphics</a></span></code></h4>
+<div class='docblock'><p>Draws the grid.</p>
+</div><h4 id='method.cells' class='method'><code>fn <a href='#method.cells' class='fnname'>cells</a>(&amp;self) -&gt; <a class='struct' href='../../graphics/grid/struct.GridCells.html' title='graphics::grid::GridCells'>GridCells</a></code></h4>
+<div class='docblock'><p>Get a GridIterator for the grid</p>
+</div><h4 id='method.cell_position' class='method'><code>fn <a href='#method.cell_position' class='fnname'>cell_position</a>(&amp;self, cell: <a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>, <a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</a>) -&gt; <a class='type' href='../../graphics/math/type.Vec2d.html' title='graphics::math::Vec2d'>Vec2d</a></code></h4>
+<div class='docblock'><p>Get on-screen position of a grid cell</p>
+</div><h4 id='method.x_pos' class='method'><code>fn <a href='#method.x_pos' class='fnname'>x_pos</a>(&amp;self, cell: <a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>, <a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</a>) -&gt; <a class='type' href='../../graphics/math/type.Scalar.html' title='graphics::math::Scalar'>Scalar</a></code></h4>
+<div class='docblock'><p>Get on-screen x position of a grid cell</p>
+</div><h4 id='method.y_pos' class='method'><code>fn <a href='#method.y_pos' class='fnname'>y_pos</a>(&amp;self, cell: <a href='https://doc.rust-lang.org/nightly/std/primitive.tuple.html'>(<a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>, <a href='https://doc.rust-lang.org/nightly/std/primitive.u32.html'>u32</a>)</a>) -&gt; <a class='type' href='../../graphics/math/type.Scalar.html' title='graphics::math::Scalar'>Scalar</a></code></h4>
+<div class='docblock'><p>Get on-screen y position of a grid cell</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../graphics/grid/struct.Grid.html' title='graphics::grid::Grid'>Grid</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../graphics/grid/struct.Grid.html' title='graphics::grid::Grid'>Grid</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a> for <a class='struct' href='../../graphics/grid/struct.Grid.html' title='graphics::grid::Grid'>Grid</a></code></h3><div class='impl-items'></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "graphics";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Spatial","Used for interpolation over spatial structures."]]});

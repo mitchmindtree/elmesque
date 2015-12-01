@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `Text` struct in crate `elmesque`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, Text">
+
+    <title>elmesque::text::Text - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+
+    
+    
+</head>
+<body class="rustdoc">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'><a href='../index.html'>elmesque</a>::<wbr><a href='index.html'>text</a></p><script>window.sidebarCurrent = {name: 'Text', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content struct">
+<h1 class='fqn'><span class='in-band'>Struct <a href='../index.html'>elmesque</a>::<wbr><a href='index.html'>text</a>::<wbr><a class='struct' href=''>Text</a></span><span class='out-of-band'><span id='render-detail'>
+            <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                [<span class='inner'>&#x2212;</span>]
+            </a>
+        </span><a id='src-9203' class='srclink' href='../../src/elmesque/text.rs.html#8-11' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct Text {
+    pub sequence: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../elmesque/text/struct.TextUnit.html' title='elmesque::text::TextUnit'>TextUnit</a>&gt;,
+    pub position: <a class='enum' href='../../elmesque/text/enum.Position.html' title='elmesque::text::Position'>Position</a>,
+}</pre><div class='docblock'><p>Drawable Text.</p>
+</div><h2 class='fields'>Fields</h2>
+<table><tr class='stab '>
+                                  <td id='structfield.sequence'><code>sequence</code></td><td></td></tr><tr class='stab '>
+                                  <td id='structfield.position'><code>position</code></td><td></td></tr></table><h2 id='methods'>Methods</h2><h3 class='impl'><code>impl <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h3><div class='impl-items'><h4 id='method.from_string' class='method'><code>fn <a href='#method.from_string' class='fnname'>from_string</a>(string: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/string/struct.String.html' title='collections::string::String'>String</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Convert a string into text which can be styled and displayed.</p>
+</div><h4 id='method.empty' class='method'><code>fn <a href='#method.empty' class='fnname'>empty</a>() -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Text with nothing in it.</p>
+</div><h4 id='method.append' class='method'><code>fn <a href='#method.append' class='fnname'>append</a>(self, other: <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Put two chunks of text together.</p>
+</div><h4 id='method.concat' class='method'><code>fn <a href='#method.concat' class='fnname'>concat</a>(texts: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a>&gt;) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Put many chunks of text together.</p>
+</div><h4 id='method.join' class='method'><code>fn <a href='#method.join' class='fnname'>join</a>(separator: <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a>, texts: <a class='struct' href='https://doc.rust-lang.org/nightly/collections/vec/struct.Vec.html' title='collections::vec::Vec'>Vec</a>&lt;<a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a>&gt;) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Put many chunks of text together with a separator.</p>
+</div><h4 id='method.style' class='method'><code>fn <a href='#method.style' class='fnname'>style</a>(self, style: <a class='struct' href='../../elmesque/text/struct.Style.html' title='elmesque::text::Style'>Style</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Set the style of some text. For example, if you design a <code>Style</code> called <code>foorter_style</code> that is
+specifically for the bottom of your page, you could apply it to text like this:</p>
+
+<p>style(footer_style, from_string(&quot;the old prince / 2007&quot;))</p>
+</div><h4 id='method.typeface' class='method'><code>fn <a href='#method.typeface' class='fnname'>typeface</a>(self, path: <a class='struct' href='https://doc.rust-lang.org/nightly/std/path/struct.PathBuf.html' title='std::path::PathBuf'>PathBuf</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Provide a path of a typeface to be used for some text.</p>
+</div><h4 id='method.monospace' class='method'><code>fn <a href='#method.monospace' class='fnname'>monospace</a>(self) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Switch to a monospace typeface. Good for code snippets.</p>
+
+<p>monospace(from_string(&quot;(0..3).fold(0, |a, b| a + b)&quot;))</p>
+</div><h4 id='method.height' class='method'><code>fn <a href='#method.height' class='fnname'>height</a>(self, h: <a href='https://doc.rust-lang.org/nightly/std/primitive.f64.html'>f64</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Set the height of some text in pixels.</p>
+</div><h4 id='method.color' class='method'><code>fn <a href='#method.color' class='fnname'>color</a>(self, color: <a class='enum' href='../../elmesque/color/enum.Color.html' title='elmesque::color::Color'>Color</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Set the color of some text.</p>
+</div><h4 id='method.bold' class='method'><code>fn <a href='#method.bold' class='fnname'>bold</a>(self) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Make the text bold.</p>
+</div><h4 id='method.italic' class='method'><code>fn <a href='#method.italic' class='fnname'>italic</a>(self) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Make the text italic.</p>
+</div><h4 id='method.line' class='method'><code>fn <a href='#method.line' class='fnname'>line</a>(self, line: <a class='enum' href='../../elmesque/text/enum.Line.html' title='elmesque::text::Line'>Line</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Put lines on text.</p>
+</div><h4 id='method.position' class='method'><code>fn <a href='#method.position' class='fnname'>position</a>(self, position: <a class='enum' href='../../elmesque/text/enum.Position.html' title='elmesque::text::Position'>Position</a>) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<div class='docblock'><p>Change the text position relative to it&#39;s center point</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 id='derived_implementations'>Derived Implementations </h3><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html' title='core::fmt::Debug'>Debug</a> for <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h3><div class='impl-items'><h4 id='method.fmt' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#method.fmt' class='fnname'>fmt</a>(&amp;self, __arg_0: &amp;mut <a class='struct' href='https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html' title='core::fmt::Formatter'>Formatter</a>) -&gt; <a class='type' href='https://doc.rust-lang.org/nightly/core/fmt/type.Result.html' title='core::fmt::Result'>Result</a></code></h4>
+</div><h3 class='impl'><code>impl <a class='trait' href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html' title='core::clone::Clone'>Clone</a> for <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h3><div class='impl-items'><h4 id='method.clone' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone' class='fnname'>clone</a>(&amp;self) -&gt; <a class='struct' href='../../elmesque/text/struct.Text.html' title='elmesque::text::Text'>Text</a></code></h4>
+<h4 id='method.clone_from' class='method'><code>fn <a href='https://doc.rust-lang.org/nightly/core/clone/trait.Clone.html#method.clone_from' class='fnname'>clone_from</a>(&amp;mut self, source: &amp;Self)</code></h4>
+</div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "elmesque";
+        window.playgroundUrl = "";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    
+    <script async src="../../search-index.js"></script>
+</body>
+</html>

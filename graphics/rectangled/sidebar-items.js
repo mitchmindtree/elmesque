@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["Rectangled","Should be implemented by contexts that have rectangle information."]]});
