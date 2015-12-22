@@ -1,3 +1,4 @@
+sudo: false
 language: rust
 os:
 - linux
@@ -5,6 +6,11 @@ env:
   global:
   - secure: W/pxVmgtzNXIQNPOm9lsIjSr2nEHGVD8uOGV0be4kdz0bUXCjFDe1j45VVDnXPoJZDrnv7TO0etn3yT7hpuiZGAT40Ovn7LVq7gqtTAoP2U7vbURN55g0MU9dSIAOUdfclAMZez9HgOHWC0P3Tg6bNkNrW5B5wwpmaFVyYwiQkE=
   - secure: qlflwsinhvNorlh6l4Hl3tQDytF/LTzlUmw3hA4yj7pwEFUP4BORTvNIlJa+DCft4P4aEU0pgCsC8eb+MQ+q1WOQr2e+EfE+KT/FS9pT6RvqyYUs4QaEznbJkHxMjzkU2N5jf6RGssIEx3ieXD1y+LETxk+KIBFY8DN+wmMYjas=
+addons:
+  apt:
+    packages:
+      - libxxf86vm-dev
+      - libosmesa6-dev
 install:
 - sudo apt-get install libXxf86vm-dev libosmesa6-dev
 script:
