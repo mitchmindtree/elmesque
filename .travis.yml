@@ -11,8 +11,6 @@ addons:
     packages:
       - libxxf86vm-dev
       - libosmesa6-dev
-install:
-- sudo apt-get install libXxf86vm-dev libosmesa6-dev
 script:
 - cargo build --verbose
 - cargo test --verbose
